@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
 const AssessmentTaxDetailsTable = () => {
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
 
     // Sample data for Assessment Tax Details
     const tableData = [
@@ -90,38 +92,198 @@ const AssessmentTaxDetailsTable = () => {
         }
     ];
 
-    // Show all 4 rows
-    const displayedData = tableData;
+    // Separate the total tax row from individual tax rows
+    const totalTaxRow = tableData.find(row => row.taxes === 'Total Tax');
+    const individualTaxRows = tableData.filter(row => row.taxes !== 'Total Tax');
+
+    // Sort only the individual tax rows based on sort configuration
+    const sortedIndividualRows = [...individualTaxRows].sort((a, b) => {
+        if (!sortConfig.key) return 0;
+
+        const aValue = a[sortConfig.key]?.toString() || '';
+        const bValue = b[sortConfig.key]?.toString() || '';
+
+        // Try to parse as numbers if possible
+        const aNum = parseFloat(aValue);
+        const bNum = parseFloat(bValue);
+
+        if (!isNaN(aNum) && !isNaN(bNum)) {
+            return sortConfig.direction === 'asc' ? aNum - bNum : bNum - aNum;
+        }
+
+        // Otherwise sort as strings
+        if (sortConfig.direction === 'asc') {
+            return aValue.localeCompare(bValue);
+        } else {
+            return bValue.localeCompare(aValue);
+        }
+    });
+
+    // Combine sorted individual rows with total tax row at the end
+    const displayedData = [...sortedIndividualRows, totalTaxRow];
+
+    // Handle single click for sorting
+    const handleHeaderClick = (columnKey) => {
+        let direction = 'asc';
+        if (sortConfig.key === columnKey && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+        setSortConfig({ key: columnKey, direction });
+    };
+
+    // Get sort icon for column
+    const getSortIcon = (columnKey) => {
+        if (sortConfig.key !== columnKey) {
+            return null;
+        }
+        return sortConfig.direction === 'asc' ?
+            <ChevronUp className="w-3 h-3 inline ml-1" /> :
+            <ChevronDown className="w-3 h-3 inline ml-1" />;
+    };
 
     return (
         <div className="w-full mt-2">
             <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-            
-                
+
+
                 {/* Table Container with horizontal scroll */}
                 <div className="overflow-x-auto scrollbar-corporate">
                     <table className="w-full text-xs">
                         <thead>
                             <tr className="bg-[#F5F9FF] border-b border-gray-300">
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[120px]">Taxes</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px]">RV</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">PropTax</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">EduTax</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">EmpTax</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px]">Tree</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">SpEduTa</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">Sanitati</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">DrainCes</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px]">SpWaterC</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">RoadCes</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">FireCes</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">LightCe</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">WatBer</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">MBuild</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">Sewage</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px]">WaterB</th>
-                                <th className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px]">Tax1</th>
-                                <th className="px-1.5 py-1.5 text-left font-semibold text-gray-700 min-w-[50px]">Tax2</th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[120px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('taxes')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    Taxes {getSortIcon('taxes')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('rv')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    RV {getSortIcon('rv')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('propTax')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    PropTax {getSortIcon('propTax')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('eduTax')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    EduTax {getSortIcon('eduTax')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('empTax')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    EmpTax {getSortIcon('empTax')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('tree')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    Tree {getSortIcon('tree')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('spEduTa')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    SpEduTa {getSortIcon('spEduTa')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('sanitati')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    Sanitati {getSortIcon('sanitati')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('drainCes')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    DrainCes {getSortIcon('drainCes')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('spWaterC')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    SpWaterC {getSortIcon('spWaterC')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('roadCes')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    RoadCes {getSortIcon('roadCes')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('fireCes')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    FireCes {getSortIcon('fireCes')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('lightCe')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    LightCe {getSortIcon('lightCe')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('watBer')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    WatBer {getSortIcon('watBer')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('mBuild')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    MBuild {getSortIcon('mBuild')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('sewage')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    Sewage {getSortIcon('sewage')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('waterB')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    WaterB {getSortIcon('waterB')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('tax1')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    Tax1 {getSortIcon('tax1')}
+                                </th>
+                                <th
+                                    className="px-1.5 py-1.5 text-left font-semibold text-gray-700 min-w-[50px] cursor-pointer hover:bg-blue-50 select-none"
+                                    onClick={() => handleHeaderClick('tax2')}
+                                    title="Single click to sort (excludes Total Tax row)"
+                                >
+                                    Tax2 {getSortIcon('tax2')}
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
