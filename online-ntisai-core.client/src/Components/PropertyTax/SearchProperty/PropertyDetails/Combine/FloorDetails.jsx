@@ -34,6 +34,7 @@ import {
 import { Copy, ClipboardPaste } from "lucide-react";
 import CustomButton from "../../../../../Helpers/ExtraProperties/CustomButtons";
 import RoomSubmissionForm from "./RoomSubmissionForm";
+
 const FloorDetails = () => {
     const [activeTab, setActiveTab] = useState("floor");
     const [activeCell, setActiveCell] = useState(null);
@@ -43,6 +44,38 @@ const FloorDetails = () => {
         openUp: false,
         visible: false,
     });
+
+    // ✅ Keyboard navigation setup
+    // Purpose: This allows moving between input fields in the Edit Floor Information form
+    // - Press Enter → moves focus to the next field
+    // - Press Left Arrow → moves focus to the previous field
+
+    const inputRefs = useRef({});
+
+    const fieldOrder = [
+        "floor", "constructionYear", "assessmentYear", "constructionType", "natureTypeBuilding", "subtype",
+        "noOfRooms", "submission", "carpetAreaSqFt", "carpetAreaSqM", "builtUpAreaSqFt", "builtUpAreaSqM",
+        "roomNo", "taxLiability", "renterName", "calcRent", "nonCalcRent", "ocApply",
+        "ocDate", "ocNo"
+    ];
+
+    const handleKeyDown = (e, fieldName) => {
+        const idx = fieldOrder.indexOf(fieldName);
+
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const next = fieldOrder[idx + 1];
+            if (next && inputRefs.current[next]) {
+                inputRefs.current[next].focus();
+            }
+        } else if (e.key === "ArrowLeft") {
+            e.preventDefault();
+            const prev = fieldOrder[idx - 1];
+            if (prev && inputRefs.current[prev]) {
+                inputRefs.current[prev].focus();
+            }
+        }
+    };
 
     // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -380,10 +413,11 @@ const FloorDetails = () => {
                                             label="Floor"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.floor || ""}
                                             onChange={(e) => setEditData({ ...editData, floor: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.floor = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "floor")}
                                         />
                                     </Grid>
 
@@ -392,10 +426,11 @@ const FloorDetails = () => {
                                             label="Construction Year"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.constructionYear}
                                             onChange={(e) => setEditData({ ...editData, constructionYear: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.constructionYear = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "constructionYear")}
                                         />
                                     </Grid>
 
@@ -404,10 +439,11 @@ const FloorDetails = () => {
                                             label="Assessment Year"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.assessmentYear}
                                             onChange={(e) => setEditData({ ...editData, assessmentYear: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.assessmentYear = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "assessmentYear")}
                                         />
                                     </Grid>
 
@@ -416,10 +452,11 @@ const FloorDetails = () => {
                                             label="Construction Type"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.constructionType}
                                             onChange={(e) => setEditData({ ...editData, constructionType: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.constructionType = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "constructionType")}
                                         />
                                     </Grid>
 
@@ -428,10 +465,11 @@ const FloorDetails = () => {
                                             label="Nature Type of Building"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.natureTypeBuilding}
                                             onChange={(e) => setEditData({ ...editData, natureTypeBuilding: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.natureTypeBuilding = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "natureTypeBuilding")}
                                         />
                                     </Grid>
 
@@ -440,10 +478,11 @@ const FloorDetails = () => {
                                             label="Subtype"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.subtype}
                                             onChange={(e) => setEditData({ ...editData, subtype: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.subtype = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "subtype")}
                                         />
                                     </Grid>
 
@@ -456,10 +495,11 @@ const FloorDetails = () => {
                                             label="No of Rooms"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editModal.noOfRooms || ""}
                                             onChange={(e) => setEditModal({ ...editModal, noOfRooms: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.noOfRooms = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "noOfRooms")}
                                         />
                                     </Grid>
 
@@ -475,6 +515,8 @@ const FloorDetails = () => {
                                                 fontWeight: "600",  // 👈 optional: make it bolder
                                                 textTransform: "none", // keeps "Submission" as typed (not ALL CAPS)
                                             }}
+                                            inputRef={(ref) => (inputRefs.current.submission = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "submission")}
                                         >
                                             Submission
                                         </Button>
@@ -493,10 +535,11 @@ const FloorDetails = () => {
                                             label="Carpet Area (sq.ft)"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.carpetAreaSqFt}
                                             onChange={(e) => setEditData({ ...editData, carpetAreaSqFt: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.carpetAreaSqFt = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "carpetAreaSqFt")}
                                         />
                                     </Grid>
 
@@ -505,10 +548,11 @@ const FloorDetails = () => {
                                             label="Carpet Area (sq.m)"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.carpetAreaSqM}
                                             onChange={(e) => setEditData({ ...editData, carpetAreaSqM: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.carpetAreaSqM = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "carpetAreaSqM")}
                                         />
                                     </Grid>
 
@@ -517,10 +561,11 @@ const FloorDetails = () => {
                                             label="Built-up Area (sq.ft)"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.builtUpAreaSqFt}
                                             onChange={(e) => setEditData({ ...editData, builtUpAreaSqFt: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.builtUpAreaSqFt = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "builtUpAreaSqFt")}
                                         />
                                     </Grid>
 
@@ -529,10 +574,11 @@ const FloorDetails = () => {
                                             label="Built-up Area (sq.m)"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.builtUpAreaSqM}
                                             onChange={(e) => setEditData({ ...editData, builtUpAreaSqM: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.builtUpAreaSqM = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "builtUpAreaSqM")}
                                         />
                                     </Grid>
 
@@ -544,10 +590,11 @@ const FloorDetails = () => {
                                             label="Room No"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.roomNo || ""}
                                             onChange={(e) => setEditData({ ...editData, roomNo: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.roomNo = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "roomNo")}
                                         />
                                     </Grid>
 
@@ -557,10 +604,11 @@ const FloorDetails = () => {
                                             select
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.taxLiability || "Self"}
                                             onChange={(e) => setEditData({ ...editData, taxLiability: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.taxLiability = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "taxLiability")}
                                         >
                                             <MenuItem value="Self">Self</MenuItem>
                                             <MenuItem value="Joint">Joint</MenuItem>
@@ -572,10 +620,11 @@ const FloorDetails = () => {
                                             label="Renter Full Name"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.renterName || ""}
                                             onChange={(e) => setEditData({ ...editData, renterName: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.renterName = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "renterName")}
                                         />
                                     </Grid>
 
@@ -584,10 +633,11 @@ const FloorDetails = () => {
                                             label="Calculate Rent (₹)"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.calcRent || ""}
                                             onChange={(e) => setEditData({ ...editData, calcRent: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.calcRent = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "calcRent")}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={3}>
@@ -595,10 +645,11 @@ const FloorDetails = () => {
                                             label="Non-Calculate Rent (₹)"
                                             size="small"
                                             InputLabelProps={{ shrink: true }}
-
                                             fullWidth
                                             value={editData.nonCalcRent || ""}
                                             onChange={(e) => setEditData({ ...editData, nonCalcRent: e.target.value })}
+                                            inputRef={(ref) => (inputRefs.current.nonCalcRent = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "nonCalcRent")}
                                         />
                                     </Grid>
 
@@ -610,6 +661,8 @@ const FloorDetails = () => {
                                                     onChange={(e) =>
                                                         setEditData({ ...editData, ocApply: e.target.checked ? "Yes" : "No" })
                                                     }
+                                                    inputRef={(ref) => (inputRefs.current.ocApply = ref)}
+                                                    onKeyDown={(e) => handleKeyDown(e, "ocApply")}
                                                 />
                                             }
                                             label="OC Apply"
@@ -637,6 +690,8 @@ const FloorDetails = () => {
                                             value={editData.ocDate || ""}
                                             onChange={(e) => setEditData({ ...editData, ocDate: e.target.value })}
                                             InputLabelProps={{ shrink: true }}
+                                            inputRef={(ref) => (inputRefs.current.ocDate = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "ocDate")}
                                         />
                                     </Grid>
 
@@ -648,6 +703,8 @@ const FloorDetails = () => {
                                             value={editData.ocNo || ""}
                                             onChange={(e) => setEditData({ ...editData, ocNo: e.target.value })}
                                             InputLabelProps={{ shrink: true }}
+                                            inputRef={(ref) => (inputRefs.current.ocNo = ref)}
+                                            onKeyDown={(e) => handleKeyDown(e, "ocNo")}
                                         />
                                     </Grid>
 
