@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, Search, ChevronUp, ChevronDown } from 'lucide-react';
 
-const ResidentialDetailsTable = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
+interface ResidentialDetailsTableProps {
+    filterLimit?: number | null;
+}
+
+const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) => {
+    const [isExpanded, setIsExpanded] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [expandedColumns, setExpandedColumns] = useState(new Set());
 
-    // Sample data for Residential Details with all 31 columns
+    // Sample data for Residential Details
     const tableData = [
         {
             newPropNo: "R001",
@@ -15,7 +19,6 @@ const ResidentialDetailsTable = () => {
             wing: "A",
             shopNo: "फ्लैट 101",
             shopName: "2BHK Flat",
-            ownerType: "श्री राम कुमार...",
             propHolderName: "राम कुमार",
             occupierName: "स्वयं",
             rent: "इकत्त",
@@ -27,10 +30,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "3",
+            bhk: "2BHK",
             toi: "2",
-            cArea: "850",
-            builtUpArea: "950",
+            cArea: "850 / 789",
+            builtUpArea: "950 / 882",
             parkingArea: "25",
+            rv: "48750",
+            totalTax: "10095",
             mobileNo: "9876543201",
             email: "ram.kumar@email.com",
             ocDate: "15/01/2023",
@@ -39,8 +45,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "875",
             opBalArea: "75",
             wbArea: "950",
-            taxArea: "1025",
-            yrRate: "18.5"
+            taxArea: "1025"
         },
         {
             newPropNo: "R002",
@@ -48,7 +53,6 @@ const ResidentialDetailsTable = () => {
             wing: "A",
             shopNo: "फ्लैट 102",
             shopName: "3BHK Flat",
-            ownerType: "श्री सुनील शर्मा...",
             propHolderName: "",
             occupierName: "किरायेदार",
             rent: "किराया",
@@ -60,10 +64,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "4",
+            bhk: "3BHK",
             toi: "2",
-            cArea: "1200",
-            builtUpArea: "1350",
+            cArea: "1200 / 1115",
+            builtUpArea: "1350 / 1254",
             parkingArea: "30",
+            rv: "69300",
+            totalTax: "14366",
             mobileNo: "9876543202",
             email: "sunil.sharma@email.com",
             ocDate: "20/01/2023",
@@ -72,8 +79,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "1230",
             opBalArea: "120",
             wbArea: "1380",
-            taxArea: "1500",
-            yrRate: "22.0"
+            taxArea: "1500"
         },
         {
             newPropNo: "R003",
@@ -81,7 +87,6 @@ const ResidentialDetailsTable = () => {
             wing: "A",
             shopNo: "फ्लैट 103",
             shopName: "1BHK Flat",
-            ownerType: "श्री विकास अग्रवाल...",
             propHolderName: "विकास अग्रवाल",
             occupierName: "स्वयं",
             rent: "इकत्त",
@@ -93,10 +98,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "2",
+            bhk: "1BHK",
             toi: "1",
-            cArea: "600",
-            builtUpArea: "700",
+            cArea: "600 / 557",
+            builtUpArea: "700 / 650",
             parkingArea: "20",
+            rv: "27440",
+            totalTax: "5686",
             mobileNo: "9876543203",
             email: "vikas.agrawal@email.com",
             ocDate: "25/01/2023",
@@ -105,8 +113,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "620",
             opBalArea: "80",
             wbArea: "720",
-            taxArea: "800",
-            yrRate: "16.8"
+            taxArea: "800"
         },
         {
             newPropNo: "R004",
@@ -114,7 +121,6 @@ const ResidentialDetailsTable = () => {
             wing: "B",
             shopNo: "फ्लैट 201",
             shopName: "2BHK Flat",
-            ownerType: "श्री अमित पटेल...",
             propHolderName: "",
             occupierName: "किरायेदार",
             rent: "किराया",
@@ -126,10 +132,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "3",
+            bhk: "2BHK",
             toi: "2",
-            cArea: "875",
-            builtUpArea: "980",
+            cArea: "875 / 812",
+            builtUpArea: "980 / 910",
             parkingArea: "25",
+            rv: "50225",
+            totalTax: "10401",
             mobileNo: "9876543204",
             email: "amit.patel@email.com",
             ocDate: "30/01/2023",
@@ -138,8 +147,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "900",
             opBalArea: "80",
             wbArea: "1005",
-            taxArea: "1085",
-            yrRate: "19.2"
+            taxArea: "1085"
         },
         {
             newPropNo: "R005",
@@ -147,7 +155,6 @@ const ResidentialDetailsTable = () => {
             wing: "B",
             shopNo: "फ्लैट 202",
             shopName: "3BHK Flat",
-            ownerType: "श्री राजेश गुप्ता...",
             propHolderName: "राजेश गुप्ता",
             occupierName: "स्वयं",
             rent: "इकत्त",
@@ -159,10 +166,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "4",
+            bhk: "3BHK",
             toi: "3",
-            cArea: "1150",
-            builtUpArea: "1280",
+            cArea: "1150 / 1069",
+            builtUpArea: "1280 / 1189",
             parkingArea: "35",
+            rv: "65680",
+            totalTax: "13616",
             mobileNo: "9876543205",
             email: "rajesh.gupta@email.com",
             ocDate: "05/02/2023",
@@ -171,8 +181,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "1185",
             opBalArea: "95",
             wbArea: "1315",
-            taxArea: "1410",
-            yrRate: "21.5"
+            taxArea: "1410"
         },
         {
             newPropNo: "R006",
@@ -180,7 +189,6 @@ const ResidentialDetailsTable = () => {
             wing: "B",
             shopNo: "फ्लैट 203",
             shopName: "2BHK Flat",
-            ownerType: "श्री प्रकाश जोशी...",
             propHolderName: "",
             occupierName: "किरायेदार",
             rent: "किराया",
@@ -192,10 +200,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "3",
+            bhk: "2BHK",
             toi: "2",
-            cArea: "825",
-            builtUpArea: "920",
+            cArea: "825 / 766",
+            builtUpArea: "920 / 854",
             parkingArea: "20",
+            rv: "47030",
+            totalTax: "9752",
             mobileNo: "9876543206",
             email: "prakash.joshi@email.com",
             ocDate: "10/02/2023",
@@ -204,8 +215,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "845",
             opBalArea: "75",
             wbArea: "940",
-            taxArea: "1015",
-            yrRate: "18.8"
+            taxArea: "1015"
         },
         {
             newPropNo: "R007",
@@ -213,7 +223,6 @@ const ResidentialDetailsTable = () => {
             wing: "C",
             shopNo: "फ्लैट 301",
             shopName: "4BHK Flat",
-            ownerType: "श्री सुरेश महाजन...",
             propHolderName: "सुरेश महाजन",
             occupierName: "स्वयं",
             rent: "इकत्त",
@@ -225,10 +234,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "5",
+            bhk: "4BHK",
             toi: "3",
-            cArea: "1650",
-            builtUpArea: "1850",
+            cArea: "1650 / 1532",
+            builtUpArea: "1850 / 1718",
             parkingArea: "40",
+            rv: "94825",
+            totalTax: "19655",
             mobileNo: "9876543207",
             email: "suresh.mahajan@email.com",
             ocDate: "15/02/2023",
@@ -237,8 +249,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "1690",
             opBalArea: "160",
             wbArea: "1890",
-            taxArea: "2050",
-            yrRate: "25.2"
+            taxArea: "2050"
         },
         {
             newPropNo: "R008",
@@ -246,7 +257,6 @@ const ResidentialDetailsTable = () => {
             wing: "C",
             shopNo: "फ्लैट 302",
             shopName: "1BHK Flat",
-            ownerType: "श्री अनिल वर्मा...",
             propHolderName: "",
             occupierName: "किरायेदार",
             rent: "किराया",
@@ -258,10 +268,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "2",
+            bhk: "1BHK",
             toi: "1",
-            cArea: "580",
-            builtUpArea: "680",
+            cArea: "580 / 538",
+            builtUpArea: "680 / 632",
             parkingArea: "15",
+            rv: "26692",
+            totalTax: "5533",
             mobileNo: "9876543208",
             email: "anil.verma@email.com",
             ocDate: "20/02/2023",
@@ -270,8 +283,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "595",
             opBalArea: "85",
             wbArea: "695",
-            taxArea: "780",
-            yrRate: "15.8"
+            taxArea: "780"
         },
         {
             newPropNo: "R009",
@@ -279,7 +291,6 @@ const ResidentialDetailsTable = () => {
             wing: "C",
             shopNo: "फ्लैट 303",
             shopName: "3BHK Flat",
-            ownerType: "श्री मोहन देसाई...",
             propHolderName: "मोहन देसाई",
             occupierName: "स्वयं",
             rent: "इकत्त",
@@ -291,10 +302,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "4",
+            bhk: "3BHK",
             toi: "2",
-            cArea: "1100",
-            builtUpArea: "1250",
+            cArea: "1100 / 1022",
+            builtUpArea: "1250 / 1161",
             parkingArea: "30",
+            rv: "64050",
+            totalTax: "13276",
             mobileNo: "9876543209",
             email: "mohan.desai@email.com",
             ocDate: "25/02/2023",
@@ -303,8 +317,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "1130",
             opBalArea: "120",
             wbArea: "1280",
-            taxArea: "1410",
-            yrRate: "20.8"
+            taxArea: "1410"
         },
         {
             newPropNo: "R010",
@@ -312,7 +325,6 @@ const ResidentialDetailsTable = () => {
             wing: "D",
             shopNo: "फ्लैट 401",
             shopName: "2BHK Flat",
-            ownerType: "श्री गणेश पाटील...",
             propHolderName: "",
             occupierName: "किरायेदार",
             rent: "किराया",
@@ -324,10 +336,13 @@ const ResidentialDetailsTable = () => {
             ct: "R",
             use: "Residential",
             rooms: "3",
+            bhk: "2BHK",
             toi: "2",
-            cArea: "890",
-            builtUpArea: "995",
+            cArea: "890 / 827",
+            builtUpArea: "995 / 924",
             parkingArea: "25",
+            rv: "50977",
+            totalTax: "10568",
             mobileNo: "9876543210",
             email: "ganesh.patil@email.com",
             ocDate: "02/03/2023",
@@ -336,8 +351,7 @@ const ResidentialDetailsTable = () => {
             enBalArea: "915",
             opBalArea: "80",
             wbArea: "1020",
-            taxArea: "1100",
-            yrRate: "19.5"
+            taxArea: "1100"
         }
     ];
 
@@ -373,8 +387,41 @@ const ResidentialDetailsTable = () => {
         }
     });
 
-    // Show only first 2 rows when collapsed, all rows when expanded (from sorted data)
-    const displayedData = isExpanded ? sortedData : sortedData.slice(0, 2);
+    // Apply filter limit if specified (based on New Property No column)
+    let limitedData = sortedData;
+    if (filterLimit !== null && filterLimit !== undefined) {
+        // Sort by newPropNo for consistent top N filtering
+        const sortedByPropNo = [...sortedData].sort((a, b) => {
+            const aNum = parseInt(a.newPropNo.replace(/\D/g, '')) || 0;
+            const bNum = parseInt(b.newPropNo.replace(/\D/g, '')) || 0;
+            return aNum - bNum; // ascending order for "top" items
+        });
+        limitedData = sortedByPropNo.slice(0, filterLimit);
+
+        // Re-apply the current sort if active
+        if (sortConfig.key) {
+            limitedData = [...limitedData].sort((a, b) => {
+                const aValue = a[sortConfig.key]?.toString() || '';
+                const bValue = b[sortConfig.key]?.toString() || '';
+
+                const aNum = parseFloat(aValue);
+                const bNum = parseFloat(bValue);
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return sortConfig.direction === 'asc' ? aNum - bNum : bNum - aNum;
+                }
+
+                if (sortConfig.direction === 'asc') {
+                    return aValue.localeCompare(bValue);
+                } else {
+                    return bValue.localeCompare(aValue);
+                }
+            });
+        }
+    }
+
+    // Show only first 2 rows when collapsed, all rows when expanded (from limited data)
+    const displayedData = isExpanded ? limitedData : limitedData.slice(0, 4);
 
     const handleToggleExpanded = () => {
         setIsExpanded(!isExpanded);
@@ -444,9 +491,9 @@ const ResidentialDetailsTable = () => {
                                 title={isExpanded ? `Hide rows (${sortedData.length}/${tableData.length} results)` : `View all ${sortedData.length}/${tableData.length} results with scroll`}
                             >
                                 {isExpanded ? (
-                                    <EyeOff className="w-3 h-3 text-blue-600" />
-                                ) : (
                                     <Eye className="w-3 h-3 text-blue-600" />
+                                ) : (
+                                    <EyeOff className="w-3 h-3 text-blue-600" />
                                 )}
                             </div>
                         )}
@@ -460,7 +507,7 @@ const ResidentialDetailsTable = () => {
                             <thead className="sticky top-0 bg-white">
                                 <tr className="bg-[#F5F9FF] border-b border-gray-300">
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('newPropNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('newPropNo')}
                                         title="Single click to sort, double click to expand column"
@@ -468,7 +515,7 @@ const ResidentialDetailsTable = () => {
                                         New PropNo {getSortIcon('newPropNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('oldPropNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('oldPropNo')}
                                         title="Single click to sort, double click to expand column"
@@ -476,7 +523,7 @@ const ResidentialDetailsTable = () => {
                                         Old PropNo {getSortIcon('oldPropNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('wing')}
                                         onDoubleClick={() => handleHeaderDoubleClick('wing')}
                                         title="Single click to sort, double click to expand column"
@@ -484,7 +531,7 @@ const ResidentialDetailsTable = () => {
                                         Wing {getSortIcon('wing')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('shopNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('shopNo')}
                                         title="Single click to sort, double click to expand column"
@@ -492,7 +539,7 @@ const ResidentialDetailsTable = () => {
                                         Shop No {getSortIcon('shopNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('shopName')}
                                         onDoubleClick={() => handleHeaderDoubleClick('shopName')}
                                         title="Single click to sort, double click to expand column"
@@ -500,15 +547,7 @@ const ResidentialDetailsTable = () => {
                                         Shop Name {getSortIcon('shopName')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
-                                        onClick={() => handleHeaderClick('ownerType')}
-                                        onDoubleClick={() => handleHeaderDoubleClick('ownerType')}
-                                        title="Single click to sort, double click to expand column"
-                                    >
-                                        Owner Type {getSortIcon('ownerType')}
-                                    </th>
-                                    <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[100px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[100px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('propHolderName')}
                                         onDoubleClick={() => handleHeaderDoubleClick('propHolderName')}
                                         title="Single click to sort, double click to expand column"
@@ -516,7 +555,7 @@ const ResidentialDetailsTable = () => {
                                         PropHolder Name {getSortIcon('propHolderName')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('occupierName')}
                                         onDoubleClick={() => handleHeaderDoubleClick('occupierName')}
                                         title="Single click to sort, double click to expand column"
@@ -524,7 +563,7 @@ const ResidentialDetailsTable = () => {
                                         Occupier Name {getSortIcon('occupierName')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('rent')}
                                         onDoubleClick={() => handleHeaderDoubleClick('rent')}
                                         title="Single click to sort, double click to expand column"
@@ -532,7 +571,7 @@ const ResidentialDetailsTable = () => {
                                         Rent {getSortIcon('rent')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('propDesc')}
                                         onDoubleClick={() => handleHeaderDoubleClick('propDesc')}
                                         title="Single click to sort, double click to expand column"
@@ -540,7 +579,7 @@ const ResidentialDetailsTable = () => {
                                         Prop Desc {getSortIcon('propDesc')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('type')}
                                         onDoubleClick={() => handleHeaderDoubleClick('type')}
                                         title="Single click to sort, double click to expand column"
@@ -548,7 +587,7 @@ const ResidentialDetailsTable = () => {
                                         Type {getSortIcon('type')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('floor')}
                                         onDoubleClick={() => handleHeaderDoubleClick('floor')}
                                         title="Single click to sort, double click to expand column"
@@ -556,7 +595,7 @@ const ResidentialDetailsTable = () => {
                                         Floor {getSortIcon('floor')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('ay')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ay')}
                                         title="Single click to sort, double click to expand column"
@@ -564,7 +603,7 @@ const ResidentialDetailsTable = () => {
                                         A.Y. {getSortIcon('ay')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('acy')}
                                         onDoubleClick={() => handleHeaderDoubleClick('acy')}
                                         title="Single click to sort, double click to expand column"
@@ -572,7 +611,7 @@ const ResidentialDetailsTable = () => {
                                         A.C.Y {getSortIcon('acy')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('ct')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ct')}
                                         title="Single click to sort, double click to expand column"
@@ -580,7 +619,7 @@ const ResidentialDetailsTable = () => {
                                         C.T {getSortIcon('ct')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('use')}
                                         onDoubleClick={() => handleHeaderDoubleClick('use')}
                                         title="Single click to sort, double click to expand column"
@@ -588,7 +627,7 @@ const ResidentialDetailsTable = () => {
                                         Use {getSortIcon('use')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('rooms')}
                                         onDoubleClick={() => handleHeaderDoubleClick('rooms')}
                                         title="Single click to sort, double click to expand column"
@@ -596,7 +635,15 @@ const ResidentialDetailsTable = () => {
                                         Rooms {getSortIcon('rooms')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        onClick={() => handleHeaderClick('bhk')}
+                                        onDoubleClick={() => handleHeaderDoubleClick('bhk')}
+                                        title="Single click to sort, double click to expand column"
+                                    >
+                                        BHK {getSortIcon('bhk')}
+                                    </th>
+                                    <th
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('toi')}
                                         onDoubleClick={() => handleHeaderDoubleClick('toi')}
                                         title="Single click to sort, double click to expand column"
@@ -604,23 +651,23 @@ const ResidentialDetailsTable = () => {
                                         Toi {getSortIcon('toi')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('cArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('cArea')}
                                         title="Single click to sort, double click to expand column"
                                     >
-                                        C.Area(SqMtr) {getSortIcon('cArea')}
+                                        C.Area(Sqft/SqMtr) {getSortIcon('cArea')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('builtUpArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('builtUpArea')}
                                         title="Single click to sort, double click to expand column"
                                     >
-                                        BuiltUp Area(SqMtr) {getSortIcon('builtUpArea')}
+                                        BuiltUp Area(Sqft/SqMtr) {getSortIcon('builtUpArea')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('parkingArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('parkingArea')}
                                         title="Single click to sort, double click to expand column"
@@ -628,7 +675,23 @@ const ResidentialDetailsTable = () => {
                                         Parking Area(SqMtr) {getSortIcon('parkingArea')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        onClick={() => handleHeaderClick('rv')}
+                                        onDoubleClick={() => handleHeaderDoubleClick('rv')}
+                                        title="Single click to sort, double click to expand column"
+                                    >
+                                        RV {getSortIcon('rv')}
+                                    </th>
+                                    <th
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        onClick={() => handleHeaderClick('totalTax')}
+                                        onDoubleClick={() => handleHeaderDoubleClick('totalTax')}
+                                        title="Single click to sort, double click to expand column"
+                                    >
+                                        Total Tax {getSortIcon('totalTax')}
+                                    </th>
+                                    <th
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('mobileNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('mobileNo')}
                                         title="Single click to sort, double click to expand column"
@@ -636,7 +699,7 @@ const ResidentialDetailsTable = () => {
                                         Mobile No {getSortIcon('mobileNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[120px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[120px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('email')}
                                         onDoubleClick={() => handleHeaderDoubleClick('email')}
                                         title="Single click to sort, double click to expand column"
@@ -644,7 +707,7 @@ const ResidentialDetailsTable = () => {
                                         Email {getSortIcon('email')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('ocDate')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ocDate')}
                                         title="Single click to sort, double click to expand column"
@@ -652,7 +715,7 @@ const ResidentialDetailsTable = () => {
                                         OC Date {getSortIcon('ocDate')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('ocApply')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ocApply')}
                                         title="Single click to sort, double click to expand column"
@@ -660,7 +723,7 @@ const ResidentialDetailsTable = () => {
                                         OC Apply {getSortIcon('ocApply')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('ocNumber')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ocNumber')}
                                         title="Single click to sort, double click to expand column"
@@ -668,7 +731,7 @@ const ResidentialDetailsTable = () => {
                                         OC Number {getSortIcon('ocNumber')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('enBalArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('enBalArea')}
                                         title="Single click to sort, double click to expand column"
@@ -676,7 +739,7 @@ const ResidentialDetailsTable = () => {
                                         EnBal Area {getSortIcon('enBalArea')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('opBalArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('opBalArea')}
                                         title="Single click to sort, double click to expand column"
@@ -684,7 +747,7 @@ const ResidentialDetailsTable = () => {
                                         OpBal Area {getSortIcon('opBalArea')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('wbArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('wbArea')}
                                         title="Single click to sort, double click to expand column"
@@ -692,20 +755,12 @@ const ResidentialDetailsTable = () => {
                                         W/B Area {getSortIcon('wbArea')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('taxArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('taxArea')}
                                         title="Single click to sort, double click to expand column"
                                     >
                                         Tax Area {getSortIcon('taxArea')}
-                                    </th>
-                                    <th
-                                        className="px-1.5 py-0.5 text-left font-semibold text-gray-700 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-50 select-none"
-                                        onClick={() => handleHeaderClick('yrRate')}
-                                        onDoubleClick={() => handleHeaderDoubleClick('yrRate')}
-                                        title="Single click to sort, double click to expand column"
-                                    >
-                                        Yr Rate {getSortIcon('yrRate')}
                                     </th>
                                 </tr>
                             </thead>
@@ -718,7 +773,6 @@ const ResidentialDetailsTable = () => {
                                             <td className={getCellClass('wing', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.wing}>{row.wing}</td>
                                             <td className={getCellClass('shopNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.shopNo}>{row.shopNo}</td>
                                             <td className={getCellClass('shopName', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.shopName}>{row.shopName}</td>
-                                            <td className={getCellClass('ownerType', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ownerType}>{row.ownerType}</td>
                                             <td className={getCellClass('propHolderName', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.propHolderName}>{row.propHolderName}</td>
                                             <td className={getCellClass('occupierName', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.occupierName}>{row.occupierName}</td>
                                             <td className={getCellClass('rent', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.rent}>{row.rent}</td>
@@ -730,10 +784,13 @@ const ResidentialDetailsTable = () => {
                                             <td className={getCellClass('ct', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ct}>{row.ct}</td>
                                             <td className={getCellClass('use', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.use}>{row.use}</td>
                                             <td className={getCellClass('rooms', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.rooms}>{row.rooms}</td>
+                                            <td className={getCellClass('bhk', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.bhk}>{row.bhk}</td>
                                             <td className={getCellClass('toi', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.toi}>{row.toi}</td>
                                             <td className={getCellClass('cArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.cArea}>{row.cArea}</td>
                                             <td className={getCellClass('builtUpArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.builtUpArea}>{row.builtUpArea}</td>
                                             <td className={getCellClass('parkingArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.parkingArea}>{row.parkingArea}</td>
+                                            <td className={getCellClass('rv', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.rv}>{row.rv}</td>
+                                            <td className={getCellClass('totalTax', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.totalTax}>{row.totalTax}</td>
                                             <td className={getCellClass('mobileNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.mobileNo}>{row.mobileNo}</td>
                                             <td className={getCellClass('email', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.email}>{row.email}</td>
                                             <td className={getCellClass('ocDate', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ocDate}>{row.ocDate}</td>
@@ -743,12 +800,11 @@ const ResidentialDetailsTable = () => {
                                             <td className={getCellClass('opBalArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.opBalArea}>{row.opBalArea}</td>
                                             <td className={getCellClass('wbArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.wbArea}>{row.wbArea}</td>
                                             <td className={getCellClass('taxArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.taxArea}>{row.taxArea}</td>
-                                            <td className={getCellClass('yrRate', "px-1.5 py-1.5 text-gray-800 text-center")} title={row.yrRate}>{row.yrRate}</td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="30" className="px-4 py-8 text-center text-gray-500 text-sm">
+                                        <td colSpan="32" className="px-4 py-8 text-center text-gray-500 text-sm">
                                             No results found for "{searchTerm}"
                                         </td>
                                     </tr>

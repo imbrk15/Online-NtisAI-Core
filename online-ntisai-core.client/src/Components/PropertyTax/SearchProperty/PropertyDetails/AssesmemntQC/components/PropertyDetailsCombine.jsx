@@ -6,9 +6,10 @@ import CommercialDetailsTable from "./CommercialDetailsTable";
 import ResidentialDetailsTable from "./ResidentialDetailsTable";
 import AssessmentTaxDetailsTable from "./AssessmentTaxDetailsTable";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Building, Building2, Home, Calculator, Eye, X } from "lucide-react";
+import { Building, Building2, Home, Calculator, Eye, X, Filter, ChevronDown } from "lucide-react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogHeader } from "./ui/dialog";
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "./ui/input";
 interface PropertyDetailsCombineProps {
     isFixed?: boolean;
     setIsFixed?: (fixed: boolean) => void;
@@ -17,6 +18,29 @@ interface PropertyDetailsCombineProps {
 const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineProps) => {
     const [activeTableTab, setActiveTableTab] = useState("amenities");
     const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+    const [filterType, setFilterType] = useState("all");
+    const [customLimit, setCustomLimit] = useState("");
+
+    // Calculate filter limit based on selection
+    const getFilterLimit = () => {
+        switch (filterType) {
+            case "top10":
+                return 10;
+            case "top30":
+                return 30;
+            case "top50":
+                return 50;
+            case "top100":
+                return 100;
+            case "custom":
+                const limit = parseInt(customLimit);
+                return !isNaN(limit) && limit > 0 ? limit : null;
+            default:
+                return null; // "all" - no limit
+        }
+    };
+
+    const filterLimit = getFilterLimit();
 
     // Building images for the modal
     const buildingImages = [
@@ -50,52 +74,85 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
                 <div className="sticky top-0 z-20 bg-gray-100 pb-0.5">
                     <PropertyForm />
                 </div>
-                
+
                 {/* Tables Section with Tabs */}
                 <div className="flex-1 space-y-1 overflow-hidden">
                     {/* Tabbed Tables Container */}
                     <div className="border border-gray-200 rounded-lg bg-white shadow-sm">
                         {/* Tabs Header */}
-                        <div className="bg-[#40648a] rounded-t-md flex justify-center items-stretch">
-                            <button
-                                onClick={() => setActiveTableTab("amenities")}
-                                className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
-                                    ${activeTableTab === "amenities"
-                                        ? "bg-white text-black rounded-t-lg h-[90%]"
-                                        : "text-white hover:bg-[#365577]"
-                                    }`}
-                            >
-                                <Building size={14} />
-                                Amenities
-                            </button>
+                        <div className="bg-[#40648a] rounded-t-md flex justify-between items-stretch">
+                            {/* Left side - Tab buttons */}
+                            <div className="flex justify-center items-stretch flex-1">
+                                <button
+                                    onClick={() => setActiveTableTab("amenities")}
+                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
+                                        ${activeTableTab === "amenities"
+                                            ? "bg-white text-black rounded-t-lg h-[90%]"
+                                            : "text-white hover:bg-[#365577]"
+                                        }`}
+                                >
+                                    <Building size={14} />
+                                    Amenities
+                                </button>
 
-                            <span className="w-px h-full bg-[#365577] opacity-70" />
+                                <span className="w-px h-full bg-[#365577] opacity-70" />
 
-                            <button
-                                onClick={() => setActiveTableTab("commercial")}
-                                className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
-                                    ${activeTableTab === "commercial"
-                                        ? "bg-white text-black rounded-t-lg h-[90%]"
-                                        : "text-white hover:bg-[#365577]"
-                                    }`}
-                            >
-                                <Building2 size={14} />
-                                Commercial Details
-                            </button>
+                                <button
+                                    onClick={() => setActiveTableTab("commercial")}
+                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
+                                        ${activeTableTab === "commercial"
+                                            ? "bg-white text-black rounded-t-lg h-[90%]"
+                                            : "text-white hover:bg-[#365577]"
+                                        }`}
+                                >
+                                    <Building2 size={14} />
+                                    Commercial Details
+                                </button>
 
-                            <span className="w-px h-full bg-[#365577] opacity-70" />
+                                <span className="w-px h-full bg-[#365577] opacity-70" />
 
-                            <button
-                                onClick={() => setActiveTableTab("residential")}
-                                className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
-                                    ${activeTableTab === "residential"
-                                        ? "bg-white text-black rounded-t-lg h-[90%]"
-                                        : "text-white hover:bg-[#365577]"
-                                    }`}
-                            >
-                                <Home size={14} />
-                                Residential Details
-                            </button>
+                                <button
+                                    onClick={() => setActiveTableTab("residential")}
+                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
+                                        ${activeTableTab === "residential"
+                                            ? "bg-white text-black rounded-t-lg h-[90%]"
+                                            : "text-white hover:bg-[#365577]"
+                                        }`}
+                                >
+                                    <Home size={14} />
+                                    Residential Details
+                                </button>
+                            </div>
+
+                            {/* Right side - Filter */}
+                            <div className="flex items-center gap-2 px-3 py-2">
+                                <div className="flex items-center gap-2">
+                                    <Filter size={30} className="text-white" />
+                                    <Select value={filterType} onValueChange={setFilterType}>
+                                        <SelectTrigger className="w-28 h-6 text-xs bg-white/95 border-0 text-black shadow-sm rounded-md flex justify-between items-center">
+                                            <SelectValue placeholder="Filter" /> 
+                                        </SelectTrigger>
+                                        <SelectContent className="min-w-32 bg-white pl-5">
+                                            <SelectItem value="all">All Rows</SelectItem>
+                                            <SelectItem value="top10">Top 10</SelectItem>
+                                            <SelectItem value="top30">Top 30</SelectItem>
+                                            <SelectItem value="top50">Top 50</SelectItem>
+                                            <SelectItem value="top100">Top 100</SelectItem>
+                                            <SelectItem value="custom">Custom</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                    {filterType === "custom" && (
+                                        <Input
+                                            type="number"
+                                            placeholder="Limit"
+                                            value={customLimit}
+                                            onChange={(e) => setCustomLimit(e.target.value)}
+                                            className="w-24 h-4 text-xs bg-white/95 border-gray-200 rounded-md shadow-sm"
+                                            min="1"
+                                        />
+                                    )}
+                                </div>
+                            </div>
                         </div>
 
                         {/* Tab Content */}
@@ -103,21 +160,21 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
                             {/* Amenities Tab */}
                             {activeTableTab === "amenities" && (
                                 <div className="space-y-1">
-                                    <AmenitiesTable />
+                                    <AmenitiesTable filterLimit={filterLimit} />
                                 </div>
                             )}
 
                             {/* Commercial Details Tab */}
                             {activeTableTab === "commercial" && (
                                 <div className="space-y-1">
-                                    <CommercialDetailsTable />
+                                    <CommercialDetailsTable filterLimit={filterLimit} />
                                 </div>
                             )}
 
                             {/* Residential Details Tab */}
                             {activeTableTab === "residential" && (
                                 <div className="space-y-1">
-                                    <ResidentialDetailsTable />
+                                    <ResidentialDetailsTable filterLimit={filterLimit} />
                                 </div>
                             )}
                         </div>
@@ -147,7 +204,7 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
                                     </p>
                                     <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
                                         <DialogTrigger asChild>
-                                            <button 
+                                            <button
                                                 className="flex items-center gap-1 text-xs hover:bg-white/20 px-2 py-1 rounded transition-colors"
                                                 onClick={(e) => e.stopPropagation()}
                                             >

@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Search, ChevronUp, ChevronDown } from 'lucide-react';
 
-const AmenitiesTable = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
+interface AmenitiesTableProps {
+    filterLimit?: number | null;
+}
+
+const AmenitiesTable = ({ filterLimit }: AmenitiesTableProps) => {
+    const [isExpanded, setIsExpanded] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
     const [expandedColumns, setExpandedColumns] = useState(new Set());
@@ -17,9 +21,7 @@ const AmenitiesTable = () => {
             use: "मराठी साहेब्रत",
             carpetArea: "2580.24 / 900",
             builutpArea: "3216.288 / 1150",
-            yearlyRate: "18.50",
             rv: "59501",
-            alv: "71401",
             propTax: "13209",
             taxTotal: "14529"
         },
@@ -32,9 +34,7 @@ const AmenitiesTable = () => {
             use: "शेरडिन क्रीमच",
             carpetArea: "43.06 / 15",
             builutpArea: "51.672 / 18",
-            yearlyRate: "15.75",
             rv: "814",
-            alv: "977",
             propTax: "154",
             taxTotal: "169"
         },
@@ -47,9 +47,7 @@ const AmenitiesTable = () => {
             use: "Club House",
             carpetArea: "1200.50 / 420",
             builutpArea: "1500.75 / 525",
-            yearlyRate: "22.00",
             rv: "33017",
-            alv: "39620",
             propTax: "8716",
             taxTotal: "9588"
         },
@@ -62,9 +60,7 @@ const AmenitiesTable = () => {
             use: "Swimming Pool",
             carpetArea: "800.30 / 280",
             builutpArea: "1000.40 / 350",
-            yearlyRate: "20.25",
             rv: "20258",
-            alv: "24310",
             propTax: "4923",
             taxTotal: "5415"
         },
@@ -77,9 +73,7 @@ const AmenitiesTable = () => {
             use: "Gymnasium",
             carpetArea: "600.25 / 210",
             builutpArea: "750.30 / 263",
-            yearlyRate: "19.80",
             rv: "14856",
-            alv: "17827",
             propTax: "3527",
             taxTotal: "3880"
         },
@@ -92,9 +86,7 @@ const AmenitiesTable = () => {
             use: "Library",
             carpetArea: "450.80 / 158",
             builutpArea: "563.50 / 197",
-            yearlyRate: "17.50",
             rv: "9858",
-            alv: "11830",
             propTax: "2070",
             taxTotal: "2277"
         },
@@ -107,9 +99,7 @@ const AmenitiesTable = () => {
             use: "Children Play Area",
             carpetArea: "300.60 / 105",
             builutpArea: "375.75 / 131",
-            yearlyRate: "16.25",
             rv: "6106",
-            alv: "7327",
             propTax: "1191",
             taxTotal: "1310"
         },
@@ -122,9 +112,7 @@ const AmenitiesTable = () => {
             use: "Community Hall",
             carpetArea: "900.45 / 315",
             builutpArea: "1125.56 / 394",
-            yearlyRate: "21.75",
             rv: "24481",
-            alv: "29377",
             propTax: "6387",
             taxTotal: "7026"
         },
@@ -137,9 +125,7 @@ const AmenitiesTable = () => {
             use: "Garden Area",
             carpetArea: "750.90 / 263",
             builutpArea: "938.63 / 329",
-            yearlyRate: "18.90",
             rv: "17740",
-            alv: "21288",
             propTax: "4024",
             taxTotal: "4426"
         },
@@ -152,9 +138,7 @@ const AmenitiesTable = () => {
             use: "Security Office",
             carpetArea: "200.40 / 70",
             builutpArea: "250.50 / 88",
-            yearlyRate: "14.50",
             rv: "3632",
-            alv: "4358",
             propTax: "632",
             taxTotal: "695"
         }
@@ -192,8 +176,41 @@ const AmenitiesTable = () => {
         }
     });
 
-    // Show only first 2 rows when collapsed, all rows when expanded (from sorted data)
-    const displayedData = isExpanded ? sortedData : sortedData.slice(0, 2);
+    // Apply filter limit if specified (based on New Property No column)
+    let limitedData = sortedData;
+    if (filterLimit !== null && filterLimit !== undefined) {
+        // Sort by newPropNo for consistent top N filtering
+        const sortedByPropNo = [...sortedData].sort((a, b) => {
+            const aNum = parseInt(a.newPropNo.replace(/\D/g, '')) || 0;
+            const bNum = parseInt(b.newPropNo.replace(/\D/g, '')) || 0;
+            return aNum - bNum; // ascending order for "top" items
+        });
+        limitedData = sortedByPropNo.slice(0, filterLimit);
+
+        // Re-apply the current sort if active
+        if (sortConfig.key) {
+            limitedData = [...limitedData].sort((a, b) => {
+                const aValue = a[sortConfig.key]?.toString() || '';
+                const bValue = b[sortConfig.key]?.toString() || '';
+
+                const aNum = parseFloat(aValue);
+                const bNum = parseFloat(bValue);
+
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return sortConfig.direction === 'asc' ? aNum - bNum : bNum - aNum;
+                }
+
+                if (sortConfig.direction === 'asc') {
+                    return aValue.localeCompare(bValue);
+                } else {
+                    return bValue.localeCompare(aValue);
+                }
+            });
+        }
+    }
+
+    // Show only first 2 rows when collapsed, all rows when expanded (from limited data)
+    const displayedData = isExpanded ? limitedData : limitedData.slice(0, 4);
 
     const handleToggleExpanded = () => {
         setIsExpanded(!isExpanded);
@@ -263,9 +280,9 @@ const AmenitiesTable = () => {
                                 title={isExpanded ? `Hide rows (${sortedData.length}/${tableData.length} results)` : `View all ${sortedData.length}/${tableData.length} results with scroll`}
                             >
                                 {isExpanded ? (
-                                    <EyeOff className="w-3 h-3 text-blue-600" />
-                                ) : (
                                     <Eye className="w-3 h-3 text-blue-600" />
+                                ) : (
+                                    <EyeOff className="w-3 h-3 text-blue-600" />
                                 )}
                             </div>
                         )}
@@ -279,7 +296,7 @@ const AmenitiesTable = () => {
                             <thead className="sticky top-0 bg-white">
                                 <tr className="bg-[#F5F9FF] border-b border-gray-300">
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('newPropNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('newPropNo')}
                                         title="Single click to sort, double click to expand column"
@@ -287,7 +304,7 @@ const AmenitiesTable = () => {
                                         New Property No {getSortIcon('newPropNo')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[40px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('floor')}
                                         onDoubleClick={() => handleHeaderDoubleClick('floor')}
                                         title="Single click to sort, double click to expand column"
@@ -295,7 +312,7 @@ const AmenitiesTable = () => {
                                         Floor {getSortIcon('floor')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('assessmentYear')}
                                         onDoubleClick={() => handleHeaderDoubleClick('assessmentYear')}
                                         title="Single click to sort, double click to expand column"
@@ -303,7 +320,7 @@ const AmenitiesTable = () => {
                                         Assessment Year {getSortIcon('assessmentYear')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('constructionYear')}
                                         onDoubleClick={() => handleHeaderDoubleClick('constructionYear')}
                                         title="Single click to sort, double click to expand column"
@@ -311,7 +328,7 @@ const AmenitiesTable = () => {
                                         Construction Year {getSortIcon('constructionYear')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('constructionType')}
                                         onDoubleClick={() => handleHeaderDoubleClick('constructionType')}
                                         title="Single click to sort, double click to expand column"
@@ -319,7 +336,7 @@ const AmenitiesTable = () => {
                                         Construction Type {getSortIcon('constructionType')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[80px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('use')}
                                         onDoubleClick={() => handleHeaderDoubleClick('use')}
                                         title="Single click to sort, double click to expand column"
@@ -327,7 +344,7 @@ const AmenitiesTable = () => {
                                         Use {getSortIcon('use')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[90px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[90px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('carpetArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('carpetArea')}
                                         title="Single click to sort, double click to expand column"
@@ -335,39 +352,39 @@ const AmenitiesTable = () => {
                                         Carpet Area<br />(sqFt/sqMtr) {getSortIcon('carpetArea')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[90px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[90px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('builutpArea')}
                                         onDoubleClick={() => handleHeaderDoubleClick('builutpArea')}
                                         title="Single click to sort, double click to expand column"
                                     >
                                         BuiltUp Area<br />(sqFt/sqMtr) {getSortIcon('builutpArea')}
                                     </th>
+                                    {/*<th*/}
+                                    {/*    className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"*/}
+                                    {/*    onClick={() => handleHeaderClick('yearlyRate')}*/}
+                                    {/*    onDoubleClick={() => handleHeaderDoubleClick('yearlyRate')}*/}
+                                    {/*    title="Single click to sort, double click to expand column"*/}
+                                    {/*>*/}
+                                    {/*    Yearly Rate {getSortIcon('yearlyRate')}*/}
+                                    {/*</th>*/}
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
-                                        onClick={() => handleHeaderClick('yearlyRate')}
-                                        onDoubleClick={() => handleHeaderDoubleClick('yearlyRate')}
-                                        title="Single click to sort, double click to expand column"
-                                    >
-                                        Yearly Rate {getSortIcon('yearlyRate')}
-                                    </th>
-                                    <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('rv')}
                                         onDoubleClick={() => handleHeaderDoubleClick('rv')}
                                         title="Single click to sort, double click to expand column"
                                     >
                                         RV {getSortIcon('rv')}
                                     </th>
+                                    {/*<th*/}
+                                    {/*    className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] cursor-pointer hover:bg-blue-100 select-none"*/}
+                                    {/*    onClick={() => handleHeaderClick('alv')}*/}
+                                    {/*    onDoubleClick={() => handleHeaderDoubleClick('alv')}*/}
+                                    {/*    title="Single click to sort, double click to expand column"*/}
+                                    {/*>*/}
+                                    {/*    ALV {getSortIcon('alv')}*/}
+                                    {/*</th>*/}
                                     <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[60px] cursor-pointer hover:bg-blue-50 select-none"
-                                        onClick={() => handleHeaderClick('alv')}
-                                        onDoubleClick={() => handleHeaderDoubleClick('alv')}
-                                        title="Single click to sort, double click to expand column"
-                                    >
-                                        ALV {getSortIcon('alv')}
-                                    </th>
-                                    <th
-                                        className="px-1 py-1 text-left border-r border-gray-300 font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('propTax')}
                                         onDoubleClick={() => handleHeaderDoubleClick('propTax')}
                                         title="Single click to sort, double click to expand column"
@@ -375,7 +392,7 @@ const AmenitiesTable = () => {
                                         Prop Tax {getSortIcon('propTax')}
                                     </th>
                                     <th
-                                        className="px-1 py-1 text-left font-semibold text-gray-700 min-w-[70px] cursor-pointer hover:bg-blue-50 select-none"
+                                        className="px-1 py-1 text-left font-bold text-gray-900 min-w-[70px] cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('taxTotal')}
                                         onDoubleClick={() => handleHeaderDoubleClick('taxTotal')}
                                         title="Single click to sort, double click to expand column"
@@ -396,9 +413,9 @@ const AmenitiesTable = () => {
                                             <td className={getCellClass('use', "px-1 py-1 border-r border-gray-200 text-gray-800")} title={row.use}>{row.use}</td>
                                             <td className={getCellClass('carpetArea', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.carpetArea}>{row.carpetArea}</td>
                                             <td className={getCellClass('builutpArea', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.builutpArea}>{row.builutpArea}</td>
-                                            <td className={getCellClass('yearlyRate', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.yearlyRate}>{row.yearlyRate}</td>
+                                            {/*<td className={getCellClass('yearlyRate', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.yearlyRate}>{row.yearlyRate}</td>*/}
                                             <td className={getCellClass('rv', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.rv}>{row.rv}</td>
-                                            <td className={getCellClass('alv', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.alv}>{row.alv}</td>
+                                            {/*<td className={getCellClass('alv', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.alv}>{row.alv}</td>*/}
                                             <td className={getCellClass('propTax', "px-1 py-1 border-r border-gray-200 text-gray-800 text-center")} title={row.propTax}>{row.propTax}</td>
                                             <td className={getCellClass('taxTotal', "px-1 py-1 text-gray-800 text-center")} title={row.taxTotal}>{row.taxTotal}</td>
                                         </tr>

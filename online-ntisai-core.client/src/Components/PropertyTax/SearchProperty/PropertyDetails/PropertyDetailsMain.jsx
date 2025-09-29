@@ -21,7 +21,7 @@ function PropertyDetailsMain() {
                     backLabel="Back to Property Search"
                 />
                 {/* Middle + Right Section */}
-                <main className="pt-16 h-[calc(100vh-64px)] overflow-y-auto  pb-14 md:pb-16 transition-[margin] duration-300"
+                <main className="pt-16 h-[calc(100vh-0)] overflow-y-auto pb-14 md:pb-16 transition-[margin] duration-300"
                     style={{ marginLeft: "var(--sidebar-w, 210px)" }}>
                     {<ProprtyDetailsCombine />}
                     <MasterDashBoardFooter />

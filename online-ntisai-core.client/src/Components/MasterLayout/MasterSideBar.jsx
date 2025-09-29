@@ -40,7 +40,7 @@ function MasterSidebar({ basePath = "", items = [] }) {
         };
     }, []);
 
-    const handleBackClick = () => navigate("/");
+    const handleBackClick = () => navigate(-1);
     const showLabel = collapsed ? "hidden" : "inline";
 
     return (
@@ -144,7 +144,7 @@ function MasterSidebar({ basePath = "", items = [] }) {
                     title="Back to Home"
                 >
                     <FaArrowLeft className="text-[14px]" />
-                    <span className={collapsed ? "hidden" : "inline"}>Back to Home</span>
+                    <span className={collapsed ? "hidden" : "inline"}>Back</span>
                 </button>
             </div>
         </aside>
