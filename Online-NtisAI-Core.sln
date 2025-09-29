@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Online-NtisAI-Core.Server", "Online-NtisAI-Core.Server\Online-NtisAI-Core.Server.csproj", "{5986D9A0-0329-4A72-8CB4-0F8E5940CB64}"
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "online-ntisai-core.client", "online-ntisai-core.client\", "{1B979213-F81E-64C5-1507-EAED221F94A6}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_58245"
+		Debug.AspNetCompiler.PhysicalPath = "online-ntisai-core.client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_58245\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_58245"
+		Release.AspNetCompiler.PhysicalPath = "online-ntisai-core.client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_58245\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "58245"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5986D9A0-0329-4A72-8CB4-0F8E5940CB64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5986D9A0-0329-4A72-8CB4-0F8E5940CB64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5986D9A0-0329-4A72-8CB4-0F8E5940CB64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5986D9A0-0329-4A72-8CB4-0F8E5940CB64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B979213-F81E-64C5-1507-EAED221F94A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B979213-F81E-64C5-1507-EAED221F94A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B979213-F81E-64C5-1507-EAED221F94A6}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B979213-F81E-64C5-1507-EAED221F94A6}.Release|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBC4CA1F-8880-43D7-BDB2-BA844D4F5EFD}
+	EndGlobalSection
+EndGlobal

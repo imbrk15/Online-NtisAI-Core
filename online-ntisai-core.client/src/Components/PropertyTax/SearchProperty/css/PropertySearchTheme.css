@@ -1,0 +1,104 @@
+/* =========================
+   MUI TABLE — solid header, centered body, zebra rows, column lines
+   ========================= */
+
+/* Header (works with stickyHeader too) */
+.ps-table table thead tr th.MuiTableCell-head,
+.ps-table table thead tr th.MuiTableCell-stickyHeader,
+.ps-table .MuiTableHead-root .MuiTableCell-head,
+.ps-table .MuiTableHead-root .MuiTableCell-stickyHeader,
+.MuiTableCell-head,
+.MuiTableCell-stickyHeader {
+  background-color: #0085bf !important; /* solid navy */
+  color: #ffffff !important;
+  text-align: center !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2px !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.35) !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+}
+
+/* Rounded outer corners (optional) */
+.ps-table table thead tr th.MuiTableCell-head:first-of-type {
+  border-top-left-radius: 8px !important;
+}
+.ps-table table thead tr th.MuiTableCell-head:last-of-type {
+  border-top-right-radius: 8px !important;
+  border-right: none !important;
+}
+
+/* Body cells centered + zebra + hover */
+.ps-table table tbody td.MuiTableCell-root,
+.MuiTableBody-root .MuiTableCell-root {
+  text-align: center !important;
+}
+.ps-table table tbody tr:nth-of-type(even),
+.MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+  background-color: #f5f7fa !important;
+}
+.ps-table table tbody tr:hover,
+.MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #eef1f5 !important;
+}
+
+/* Column grid lines */
+.ps-table table {
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+.ps-table table thead tr th.MuiTableCell-head,
+.ps-table table thead tr th.MuiTableCell-stickyHeader {
+  border-right: 1px solid #dbe4ef !important;
+}
+.ps-table table thead tr th.MuiTableCell-head:last-of-type,
+.ps-table table thead tr th.MuiTableCell-stickyHeader:last-of-type {
+  border-right: none !important;
+}
+.ps-table table tbody tr td.MuiTableCell-root {
+  border-right: 1px solid #dbe4ef !important;
+  border-bottom: 1px solid #ebeff5 !important;
+}
+.ps-table table tbody tr td.MuiTableCell-root:last-of-type {
+  border-right: none !important;
+}
+.ps-table table thead tr th.MuiTableCell-head:first-of-type,
+.ps-table table tbody tr td.MuiTableCell-root:first-of-type {
+  border-left: 1px solid #dbe4ef !important;
+}
+
+/* =========================
+   FOOTER EXPORT BUTTONS (IDs must exist on your MUI <Button>s)
+   ========================= */
+:root {
+  --gradient-accent: linear-gradient(45deg, #004479, #0085bf);
+  --gradient-accent-hover: linear-gradient(45deg, #0085bf, #004479);
+}
+
+#btnExportExcel.MuiButton-root,
+#btnExportPDF.MuiButton-root,
+#btnSendSMS.MuiButton-root {
+  color: #fff !important;
+  border-radius: 7px !important;
+  background: var(--gradient-accent) !important;
+  box-shadow: 0 6px 14px rgba(0, 69, 112, 0.22) !important;
+  border: none !important;
+  text-transform: uppercase !important;
+}
+#btnExportExcel.MuiButton-root:hover,
+#btnExportPDF.MuiButton-root:hover,
+#btnSendSMS.MuiButton-root:hover {
+  background: var(--gradient-accent-hover) !important;
+}
+#btnExportExcel .MuiButton-startIcon .MuiSvgIcon-root,
+#btnExportPDF .MuiButton-startIcon .MuiSvgIcon-root,
+#btnSendSMS .MuiButton-startIcon .MuiSvgIcon-root {
+  color: #fff !important;
+}
+#btnExportExcel.MuiButton-root.Mui-disabled,
+#btnExportPDF.MuiButton-root.Mui-disabled,
+#btnSendSMS.MuiButton-root.Mui-disabled {
+  background: #e7edf5 !important;
+  color: #9fb3c8 !important;
+  box-shadow: none !important;
+}

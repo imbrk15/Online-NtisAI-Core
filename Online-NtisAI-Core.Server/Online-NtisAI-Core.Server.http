@@ -1,0 +1,6 @@
+@Online_NtisAI_Core.Server_HostAddress = http://localhost:5273
+
+GET {{Online_NtisAI_Core.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,12 @@
+﻿{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": [ "DOM", "ESNext" ],
+    "jsx": "react-jsx",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true, // ✅ lets you keep using .js/.jsx
+    "skipLibCheck": true
+  },
+  "include": [ "src" ]
+}
