@@ -253,6 +253,11 @@ const AmenitiesTable = ({ filterLimit }: AmenitiesTableProps) => {
             "max-w-[150px] truncate whitespace-nowrap overflow-hidden";
         return `${baseClass} ${expandedClass}`;
     };
+    // Handle right-click navigation
+    const handleRowRightClick = (e: React.MouseEvent, rowData: any) => {
+        e.preventDefault(); // Prevent default context menu
+        window.location.href = "/propertyTax/propertySearch/propertyDetails";
+    };
 
     return (
         <div className="mt-1">
@@ -404,7 +409,10 @@ const AmenitiesTable = ({ filterLimit }: AmenitiesTableProps) => {
                             <tbody>
                                 {displayedData.length > 0 ? (
                                     displayedData.map((row, index) => (
-                                        <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                                        <tr key={index}
+                                            className="border-b border-gray-200 hover:bg-gray-50 cursor-context-menu"
+                                            onContextMenu={(e) => handleRowRightClick(e, row)}
+                                            title="Right-click to view property details">
                                             <td className={getCellClass('newPropNo', "px-1 py-1 border-r border-gray-200 text-gray-800")} title={row.newPropNo}>{row.newPropNo}</td>
                                             <td className={getCellClass('floor', "px-1 py-1 border-r border-gray-200 text-gray-800")} title={row.floor}>{row.floor}</td>
                                             <td className={getCellClass('assessmentYear', "px-1 py-1 border-r border-gray-200 text-gray-800")} title={row.assessmentYear}>{row.assessmentYear}</td>

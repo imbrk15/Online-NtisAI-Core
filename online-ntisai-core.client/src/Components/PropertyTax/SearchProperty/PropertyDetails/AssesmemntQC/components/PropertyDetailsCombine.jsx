@@ -85,7 +85,7 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
                             <div className="flex justify-center items-stretch flex-1">
                                 <button
                                     onClick={() => setActiveTableTab("amenities")}
-                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
+                                    className={`flex items-center gap-2 px-6 py-2 text-sm font-medium transition-all mt-2
                                         ${activeTableTab === "amenities"
                                             ? "bg-white text-black rounded-t-lg h-[90%]"
                                             : "text-white hover:bg-[#365577]"
@@ -99,7 +99,7 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
 
                                 <button
                                     onClick={() => setActiveTableTab("commercial")}
-                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
+                                    className={`flex items-center gap-2 px-6 py-2 text-sm font-medium transition-all mt-2
                                         ${activeTableTab === "commercial"
                                             ? "bg-white text-black rounded-t-lg h-[90%]"
                                             : "text-white hover:bg-[#365577]"
@@ -113,7 +113,7 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
 
                                 <button
                                     onClick={() => setActiveTableTab("residential")}
-                                    className={`flex items-center gap-1.5 px-4 py-1.5 text-sm font-medium transition-all mt-1
+                                    className={`flex items-center gap-2 px-6 py-2 text-sm font-medium transition-all mt-2
                                         ${activeTableTab === "residential"
                                             ? "bg-white text-black rounded-t-lg h-[90%]"
                                             : "text-white hover:bg-[#365577]"
@@ -132,7 +132,7 @@ const PropertyDetailsCombine = ({ isFixed, setIsFixed }: PropertyDetailsCombineP
                                         <SelectTrigger className="w-28 h-6 text-xs bg-white/95 border-0 text-black shadow-sm rounded-md flex justify-between items-center">
                                             <SelectValue placeholder="Filter" /> 
                                         </SelectTrigger>
-                                        <SelectContent className="min-w-32 bg-white pl-5">
+                                        <SelectContent className="min-w-28 bg-white">
                                             <SelectItem value="all">All Rows</SelectItem>
                                             <SelectItem value="top10">Top 10</SelectItem>
                                             <SelectItem value="top30">Top 30</SelectItem>

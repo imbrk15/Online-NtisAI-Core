@@ -47,6 +47,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "140 / 130",
             parkingArea: "0",
             rv: "59501",
+            propTax: "2975", // Added Prop Tax
             totalTax: "14529",
             mobileNo: "9876543210",
             email: "owner1@email.com",
@@ -80,6 +81,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "165 / 153",
             parkingArea: "5",
             rv: "33017",
+            propTax: "1651", // Added Prop Tax
             totalTax: "6854",
             mobileNo: "9876543211",
             email: "owner2@email.com",
@@ -113,6 +115,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "150 / 139",
             parkingArea: "8",
             rv: "28456",
+            propTax: "1423", // Added Prop Tax
             totalTax: "5894",
             mobileNo: "9876543212",
             email: "ram.kumar@email.com",
@@ -146,6 +149,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "155 / 144",
             parkingArea: "0",
             rv: "42789",
+            propTax: "2139", // Added Prop Tax
             totalTax: "8856",
             mobileNo: "9876543213",
             email: "suresh.patil@email.com",
@@ -179,6 +183,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "138 / 128",
             parkingArea: "10",
             rv: "24617",
+            propTax: "1231", // Added Prop Tax
             totalTax: "5103",
             mobileNo: "9876543214",
             email: "manoj.sharma@email.com",
@@ -212,6 +217,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "152 / 141",
             parkingArea: "3",
             rv: "31245",
+            propTax: "1562", // Added Prop Tax
             totalTax: "6476",
             mobileNo: "9876543215",
             email: "amit.desai@email.com",
@@ -245,6 +251,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "165 / 153",
             parkingArea: "12",
             rv: "48923",
+            propTax: "2446", // Added Prop Tax
             totalTax: "10135",
             mobileNo: "9876543216",
             email: "vikas.agrawal@email.com",
@@ -278,6 +285,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "160 / 149",
             parkingArea: "5",
             rv: "35678",
+            propTax: "1784", // Added Prop Tax
             totalTax: "7395",
             mobileNo: "9876543217",
             email: "ramesh.kumar@email.com",
@@ -311,6 +319,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "148 / 138",
             parkingArea: "2",
             rv: "27834",
+            propTax: "1392", // Added Prop Tax
             totalTax: "5768",
             mobileNo: "9876543218",
             email: "sanjay.mishra@email.com",
@@ -344,6 +353,7 @@ const CommercialDetailsTable = ({
             builtUpArea: "162 / 150",
             parkingArea: "7",
             rv: "39567",
+            propTax: "1978", // Added Prop Tax
             totalTax: "8200",
             mobileNo: "9876543219",
             email: "prakash.joshi@email.com",
@@ -482,7 +492,11 @@ const CommercialDetailsTable = ({
             : "max-w-[150px] truncate whitespace-nowrap overflow-hidden";
         return `${baseClass} ${expandedClass}`;
     };
-
+    // Handle right-click navigation
+    const handleRowRightClick = (e: React.MouseEvent, rowData: any) => {
+        e.preventDefault(); // Prevent default context menu
+        window.location.href = "/propertyTax/propertySearch/propertyDetails";
+    };
     return (
         <div className="mt-1">
             <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
@@ -766,6 +780,14 @@ const CommercialDetailsTable = ({
                                         RV {getSortIcon("rv")}
                                     </th>
                                     <th
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        onClick={() => handleHeaderClick('propTax')}
+                                        onDoubleClick={() => handleHeaderDoubleClick('propTax')}
+                                        title="Single click to sort, double click to expand column"
+                                    >
+                                        Prop Tax {getSortIcon('propTax')}
+                                    </th>
+                                    <th
                                         className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() =>
                                             handleHeaderClick("totalTax")
@@ -882,7 +904,9 @@ const CommercialDetailsTable = ({
                                     displayedData.map((row, index) => (
                                         <tr
                                             key={index}
-                                            className="border-b border-gray-200 hover:bg-gray-50"
+                                            className="border-b border-gray-200 hover:bg-gray-50 cursor-context-menu"
+                                            onContextMenu={(e) => handleRowRightClick(e, row)}
+                                            title="Right-click to view property details"
                                         >
                                             <td
                                                 className={getCellClass(
@@ -1072,6 +1096,15 @@ const CommercialDetailsTable = ({
                                                 title={row.rv}
                                             >
                                                 {row.rv}
+                                            </td>
+                                            <td
+                                                className={getCellClass(
+                                                    "propTax",
+                                                    "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center",
+                                                )}
+                                                title={row.propTax}
+                                            >
+                                                {row.propTax}
                                             </td>
                                             <td
                                                 className={getCellClass(

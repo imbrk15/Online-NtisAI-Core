@@ -36,6 +36,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "950 / 882",
             parkingArea: "25",
             rv: "48750",
+            propTax: "2437", // Added Prop Tax
             totalTax: "10095",
             mobileNo: "9876543201",
             email: "ram.kumar@email.com",
@@ -70,6 +71,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1350 / 1254",
             parkingArea: "30",
             rv: "69300",
+            propTax: "3465", // Added Prop Tax
             totalTax: "14366",
             mobileNo: "9876543202",
             email: "sunil.sharma@email.com",
@@ -104,6 +106,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "700 / 650",
             parkingArea: "20",
             rv: "27440",
+            propTax: "1372", // Added Prop Tax
             totalTax: "5686",
             mobileNo: "9876543203",
             email: "vikas.agrawal@email.com",
@@ -138,6 +141,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "980 / 910",
             parkingArea: "25",
             rv: "50225",
+            propTax: "2511", // Added Prop Tax
             totalTax: "10401",
             mobileNo: "9876543204",
             email: "amit.patel@email.com",
@@ -172,6 +176,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1280 / 1189",
             parkingArea: "35",
             rv: "65680",
+            propTax: "3284", // Added Prop Tax
             totalTax: "13616",
             mobileNo: "9876543205",
             email: "rajesh.gupta@email.com",
@@ -206,6 +211,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "920 / 854",
             parkingArea: "20",
             rv: "47030",
+            propTax: "2351", // Added Prop Tax
             totalTax: "9752",
             mobileNo: "9876543206",
             email: "prakash.joshi@email.com",
@@ -240,6 +246,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1850 / 1718",
             parkingArea: "40",
             rv: "94825",
+            propTax: "4741", // Added Prop Tax
             totalTax: "19655",
             mobileNo: "9876543207",
             email: "suresh.mahajan@email.com",
@@ -274,6 +281,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "680 / 632",
             parkingArea: "15",
             rv: "26692",
+            propTax: "1334", // Added Prop Tax
             totalTax: "5533",
             mobileNo: "9876543208",
             email: "anil.verma@email.com",
@@ -308,6 +316,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1250 / 1161",
             parkingArea: "30",
             rv: "64050",
+            propTax: "3202", // Added Prop Tax
             totalTax: "13276",
             mobileNo: "9876543209",
             email: "mohan.desai@email.com",
@@ -342,6 +351,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "995 / 924",
             parkingArea: "25",
             rv: "50977",
+            propTax: "2548", // Added Prop Tax
             totalTax: "10568",
             mobileNo: "9876543210",
             email: "ganesh.patil@email.com",
@@ -463,6 +473,11 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             "max-w-none whitespace-normal break-words" :
             "max-w-[150px] truncate whitespace-nowrap overflow-hidden";
         return `${baseClass} ${expandedClass}`;
+    };
+    // Handle right-click navigation
+    const handleRowRightClick = (e: React.MouseEvent, rowData: any) => {
+        e.preventDefault(); // Prevent default context menu
+        window.location.href = "/propertyTax/propertySearch/propertyDetails";
     };
 
     return (
@@ -683,6 +698,14 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         RV {getSortIcon('rv')}
                                     </th>
                                     <th
+                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        onClick={() => handleHeaderClick('propTax')}
+                                        onDoubleClick={() => handleHeaderDoubleClick('propTax')}
+                                        title="Single click to sort, double click to expand column"
+                                    >
+                                        Prop Tax {getSortIcon('propTax')}
+                                    </th>
+                                    <th
                                         className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() => handleHeaderClick('totalTax')}
                                         onDoubleClick={() => handleHeaderDoubleClick('totalTax')}
@@ -767,7 +790,10 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                             <tbody>
                                 {displayedData.length > 0 ? (
                                     displayedData.map((row, index) => (
-                                        <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                                        <tr key={index}
+                                            className="border-b border-gray-200 hover:bg-gray-50 cursor-context-menu"
+                                            onContextMenu={(e) => handleRowRightClick(e, row)}
+                                            title="Right-click to view property details">
                                             <td className={getCellClass('newPropNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.newPropNo}>{row.newPropNo}</td>
                                             <td className={getCellClass('oldPropNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.oldPropNo}>{row.oldPropNo}</td>
                                             <td className={getCellClass('wing', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.wing}>{row.wing}</td>
@@ -790,6 +816,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                             <td className={getCellClass('builtUpArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.builtUpArea}>{row.builtUpArea}</td>
                                             <td className={getCellClass('parkingArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.parkingArea}>{row.parkingArea}</td>
                                             <td className={getCellClass('rv', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.rv}>{row.rv}</td>
+                                            <td className={getCellClass('propTax', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.propTax}>{row.propTax}</td>
                                             <td className={getCellClass('totalTax', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.totalTax}>{row.totalTax}</td>
                                             <td className={getCellClass('mobileNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.mobileNo}>{row.mobileNo}</td>
                                             <td className={getCellClass('email', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.email}>{row.email}</td>
