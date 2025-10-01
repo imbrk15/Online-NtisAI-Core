@@ -1,87 +1,46 @@
 ﻿import React, { useEffect, useRef, useState } from "react";
-import { FaBook, FaUsers, FaHistory, FaFileAlt } from "react-icons/fa";
-
-import {
-    FaEdit,
-    FaTools,
-    FaCalendarAlt,
-    FaHome,
-    FaBuilding,
-    FaThLarge,
-    FaDoorOpen,
-    FaRulerCombined,
-    FaDraftingCompass,
-    FaKey,
-    FaBalanceScale,
-    FaUser,
-    FaMoneyBillWave,
-    FaCheckCircle,
-    FaCalendarCheck,
-    FaTag
-} from "react-icons/fa";
-
-import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    TextField,
-    MenuItem,
-    Grid,
-    FormControlLabel,
-    Switch,
-    Button,
-} from "@mui/material";
-import { Copy, ClipboardPaste } from "lucide-react";
-import CustomButton from "../../../../../Helpers/ExtraProperties/CustomButtons";
+import { FaBook, FaUsers, FaHistory, FaFileAlt, FaPlus } from "react-icons/fa";
+import { Menu, MenuItem, Button, Dialog, DialogContent } from "@mui/material";
 import RoomSubmissionForm from "./RoomSubmissionForm";
+import EditFloorInformation from "./EditFloorInformation";
+
+// Helper function to format date from yyyy-mm-dd to dd-mm-yy
+const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year.slice(2)}`;
+};
 
 const FloorDetails = () => {
     const [activeTab, setActiveTab] = useState("floor");
     const [activeCell, setActiveCell] = useState(null);
-    const [menuPos, setMenuPos] = useState({
-        top: 0,
-        left: 0,
-        openUp: false,
-        visible: false,
-    });
+    const [menuAnchor, setMenuAnchor] = useState(null);
+    const [menuRow, setMenuRow] = useState(null);
 
-    // ✅ Keyboard navigation setup
-    // Purpose: This allows moving between input fields in the Edit Floor Information form
-    // - Press Enter → moves focus to the next field
-    // - Press Left Arrow → moves focus to the previous field
-
-    const inputRefs = useRef({});
-
-    const fieldOrder = [
-        "floor", "constructionYear", "assessmentYear", "constructionType", "natureTypeBuilding", "subtype",
-        "noOfRooms", "submission", "carpetAreaSqFt", "carpetAreaSqM", "builtUpAreaSqFt", "builtUpAreaSqM",
-        "roomNo", "taxLiability", "renterName", "calcRent", "nonCalcRent", "ocApply",
-        "ocDate", "ocNo"
-    ];
-
-    const handleKeyDown = (e, fieldName) => {
-        const idx = fieldOrder.indexOf(fieldName);
-
-        if (e.key === "Enter") {
-            e.preventDefault();
-            const next = fieldOrder[idx + 1];
-            if (next && inputRefs.current[next]) {
-                inputRefs.current[next].focus();
-            }
-        } else if (e.key === "ArrowLeft") {
-            e.preventDefault();
-            const prev = fieldOrder[idx - 1];
-            if (prev && inputRefs.current[prev]) {
-                inputRefs.current[prev].focus();
-            }
-        }
-    };
-
-    // Modal state
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
+    const [editModal, setEditModal] = useState({});
+    const inputRefs = useRef({});
 
-    // auto horizontal scroll
+    // Inline editing
+    const [editingCell, setEditingCell] = useState({ row: null, col: null });
+    const cellInputRef = useRef(null);
+
+    // Define editable fields in order for navigation (excluding ID)
+    const editableFields = [
+        "floor", "constructionYear", "assessmentYear",
+        "constructionType", "natureTypeBuilding", "subtype", "noOfRooms",
+        "carpetAreaSqFt", "carpetAreaSqM",
+        "builtUpAreaSqFt", "builtUpAreaSqM",
+        "renterName", "calcRent", "nonCalcRent", "ocNo"
+    ];
+
+    // Room submission modal
+    const [openModal, setOpenModal] = useState(false);
+    const handleOpen = () => setOpenModal(true);
+    const handleClose = () => setOpenModal(false);
+
+    // auto scroll
     const scrollRef = useRef(null);
     const [paused, setPaused] = useState(false);
     useEffect(() => {
@@ -102,26 +61,6 @@ const FloorDetails = () => {
         return () => cancelAnimationFrame(rafId);
     }, [paused]);
 
-    // close menu on outside click / ESC / scroll / resize
-    useEffect(() => {
-        const close = () => setMenuPos((p) => ({ ...p, visible: false }));
-        const onDocClick = (e) => {
-            if (!e.target.closest?.("[data-dd]")) close();
-        };
-        const onEsc = (e) => e.key === "Escape" && close();
-        const onScroll = () => close();
-        window.addEventListener("click", onDocClick);
-        window.addEventListener("keydown", onEsc);
-        window.addEventListener("scroll", onScroll, true);
-        window.addEventListener("resize", onScroll, true);
-        return () => {
-            window.removeEventListener("click", onDocClick);
-            window.removeEventListener("keydown", onEsc);
-            window.removeEventListener("scroll", onScroll, true);
-            window.removeEventListener("resize", onScroll, true);
-        };
-    }, []);
-
     const tabs = [
         { key: "floor", label: "Floor Details", icon: <FaBook size={16} /> },
         { key: "social", label: "Social Details", icon: <FaUsers size={16} /> },
@@ -129,6 +68,7 @@ const FloorDetails = () => {
         { key: "tax", label: "Apply Tax", icon: <FaFileAlt size={16} /> },
     ];
 
+    // ✅ Dataset with 7 records
     const [floorDetailsData, setFloorDetailsData] = useState([
         {
             id: 1,
@@ -138,10 +78,17 @@ const FloorDetails = () => {
             constructionType: "PR",
             natureTypeBuilding: "Residential",
             subtype: "Apartment",
+            noOfRooms: 2,
             carpetAreaSqFt: "121.37",
             carpetAreaSqM: "11.28",
             builtUpAreaSqFt: "145.64",
             builtUpAreaSqM: "13.53",
+            renterName: "Ramesh Patil",
+            calcRent: "8000",
+            nonCalcRent: "5000",
+            ocNo: "OC-2024-001",
+            ocApply: "Yes",
+            ocDate: "2024-05-12",
         },
         {
             id: 2,
@@ -151,63 +98,212 @@ const FloorDetails = () => {
             constructionType: "A2",
             natureTypeBuilding: "Residential",
             subtype: "Apartment",
+            noOfRooms: 3,
             carpetAreaSqFt: "475.02",
             carpetAreaSqM: "44.13",
             builtUpAreaSqFt: "570.02",
             builtUpAreaSqM: "52.96",
+            renterName: "Suresh Sharma",
+            calcRent: "12000",
+            nonCalcRent: "9000",
+            ocNo: "",
+            ocApply: "No",
+            ocDate: "",
+        },
+        {
+            id: 3,
+            floor: "2",
+            constructionYear: 2013,
+            assessmentYear: 2023,
+            constructionType: "B1",
+            natureTypeBuilding: "Commercial",
+            subtype: "Shop",
+            noOfRooms: 1,
+            carpetAreaSqFt: "220.00",
+            carpetAreaSqM: "20.43",
+            builtUpAreaSqFt: "260.00",
+            builtUpAreaSqM: "24.15",
+            renterName: "Meena Traders",
+            calcRent: "15000",
+            nonCalcRent: "11000",
+            ocNo: "OC-2023-045",
+            ocApply: "Yes",
+            ocDate: "2023-12-01",
+        },
+        {
+            id: 4,
+            floor: "3",
+            constructionYear: 2014,
+            assessmentYear: 2023,
+            constructionType: "C1",
+            natureTypeBuilding: "Residential",
+            subtype: "Flat",
+            noOfRooms: 2,
+            carpetAreaSqFt: "300.50",
+            carpetAreaSqM: "27.93",
+            builtUpAreaSqFt: "360.50",
+            builtUpAreaSqM: "33.49",
+            renterName: "Anita Joshi",
+            calcRent: "10000",
+            nonCalcRent: "7500",
+            ocNo: "",
+            ocApply: "No",
+            ocDate: "",
+        },
+        {
+            id: 5,
+            floor: "4",
+            constructionYear: 2015,
+            assessmentYear: 2023,
+            constructionType: "PR",
+            natureTypeBuilding: "Residential",
+            subtype: "Apartment",
+            noOfRooms: 3,
+            carpetAreaSqFt: "410.00",
+            carpetAreaSqM: "38.09",
+            builtUpAreaSqFt: "490.00",
+            builtUpAreaSqM: "45.52",
+            renterName: "Vikas Rao",
+            calcRent: "14000",
+            nonCalcRent: "10000",
+            ocNo: "OC-2022-098",
+            ocApply: "Yes",
+            ocDate: "2022-10-20",
+        },
+        {
+            id: 6,
+            floor: "5",
+            constructionYear: 2016,
+            assessmentYear: 2023,
+            constructionType: "A2",
+            natureTypeBuilding: "Commercial",
+            subtype: "Office",
+            noOfRooms: 5,
+            carpetAreaSqFt: "600.00",
+            carpetAreaSqM: "55.74",
+            builtUpAreaSqFt: "720.00",
+            builtUpAreaSqM: "66.89",
+            renterName: "TechCorp Pvt Ltd",
+            calcRent: "25000",
+            nonCalcRent: "18000",
+            ocNo: "OC-2021-123",
+            ocApply: "Yes",
+            ocDate: "2021-08-15",
+        },
+        {
+            id: 7,
+            floor: "6",
+            constructionYear: 2017,
+            assessmentYear: 2023,
+            constructionType: "B2",
+            natureTypeBuilding: "Residential",
+            subtype: "Penthouse",
+            noOfRooms: 4,
+            carpetAreaSqFt: "850.00",
+            carpetAreaSqM: "78.97",
+            builtUpAreaSqFt: "1000.00",
+            builtUpAreaSqM: "92.90",
+            renterName: "Rekha Iyer",
+            calcRent: "30000",
+            nonCalcRent: "22000",
+            ocNo: "",
+            ocApply: "No",
+            ocDate: "",
         },
     ]);
 
-    const getFloorName = (floor) => {
-        const map = {
-            G: "Ground",
-            B: "Basement",
-            "1": "First",
-            "2": "Second",
-            "3": "Third",
-            "4": "Fourth",
-            "5": "Fifth",
-            "6": "Sixth",
-            "7": "Seventh",
-            "8": "Eighth",
-            "9": "Ninth",
-            "10": "Tenth",
-        };
-        return map[floor] || floor;
+    const dropdownOptions = ["Edit", "New", "Delete", "Copy"];
+
+    const handleCellSave = (rowIdx, field, value) => {
+        setFloorDetailsData((prev) =>
+            prev.map((row, idx) => (idx === rowIdx ? { ...row, [field]: value } : row))
+        );
+        setEditingCell({ row: null, col: null });
     };
 
-    const dropdownOptions = ["Edit", "Delete", "Copy", "New"];
-
-    const openMenuForCell = (e, rowIdx, colIdx) => {
-        e.stopPropagation();
-        const rect = e.currentTarget.getBoundingClientRect();
-        const menuH = 160;
-        const menuW = 160;
-        const margin = 8;
-        const openUp = window.innerHeight - rect.bottom < menuH + margin;
-        const top = openUp ? rect.top - menuH - margin : rect.bottom + margin;
-        const left = Math.min(rect.left, window.innerWidth - menuW - margin);
-
-        setActiveCell({ row: rowIdx, col: colIdx });
-        setMenuPos({ top, left, openUp, visible: true });
-    };
-
-    const handleMenuClick = (option, rowIdx) => {
-        if (option === "Edit") {
-            setEditData(floorDetailsData[rowIdx]);
-            setIsModalOpen(true);
+    const moveToNextCell = (rowIdx, currentField) => {
+        const currentIndex = editableFields.indexOf(currentField);
+        if (currentIndex < editableFields.length - 1) {
+            const nextField = editableFields[currentIndex + 1];
+            setEditingCell({ row: rowIdx, col: nextField });
+        } else {
+            // Last column, exit edit mode
+            setEditingCell({ row: null, col: null });
         }
-        setMenuPos({ ...menuPos, visible: false });
+    };
+
+    const handleCellKeyDown = (e, rowIdx, field, value) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            // Save current value
+            setFloorDetailsData((prev) =>
+                prev.map((row, idx) => (idx === rowIdx ? { ...row, [field]: value } : row))
+            );
+            // Move to next cell
+            moveToNextCell(rowIdx, field);
+        } else if (e.key === "Escape") {
+            e.preventDefault();
+            // Cancel editing without saving
+            setEditingCell({ row: null, col: null });
+        }
+    };
+
+    // Focus the input when editing cell changes
+    useEffect(() => {
+        if (cellInputRef.current) {
+            cellInputRef.current.focus();
+            cellInputRef.current.select();
+        }
+    }, [editingCell]);
+
+    // ✅ Right-click menu at cursor position
+    const handleRowContextMenu = (event, rowIdx) => {
+        event.preventDefault();
+        setMenuRow(rowIdx);
+        setMenuAnchor({
+            mouseX: event.clientX + 2,
+            mouseY: event.clientY - 6,
+        });
+    };
+
+    const handleMenuClick = (option) => {
+        if (option === "Edit" || option === "Copy") {
+            setEditData(floorDetailsData[menuRow]);
+            setIsModalOpen(true);
+        } else if (option === "New") {
+            setEditData({
+                id: null,
+                floor: "",
+                constructionYear: "",
+                assessmentYear: "",
+                constructionType: "",
+                natureTypeBuilding: "",
+                subtype: "",
+                noOfRooms: "",
+                carpetAreaSqFt: "",
+                carpetAreaSqM: "",
+                builtUpAreaSqFt: "",
+                builtUpAreaSqM: "",
+                renterName: "",
+                calcRent: "",
+                nonCalcRent: "",
+                ocNo: "",
+                ocApply: "No",
+                ocDate: "",
+            });
+            setIsModalOpen(true);
+        } else if (option === "Delete") {
+            setFloorDetailsData((prev) => prev.filter((_, idx) => idx !== menuRow));
+        }
+        setMenuAnchor(null);
     };
 
     const handleSave = () => {
-        if (editData.id) {
-            // Edit existing row
+        if (editData?.id) {
             setFloorDetailsData((prev) =>
                 prev.map((row) => (row.id === editData.id ? editData : row))
             );
         } else {
-            // Add new row
             setFloorDetailsData((prev) => [
                 ...prev,
                 { ...editData, id: prev.length + 1 },
@@ -215,47 +311,56 @@ const FloorDetails = () => {
         }
         setIsModalOpen(false);
     };
-    const [editModal, setEditModal] = useState({});
-    const [openModal, setOpenModal] = useState(false);
 
-    const handleOpen = () => setOpenModal(true);
-    const handleClose = () => setOpenModal(false);
+    // ✅ show-all toggle
+    const [showAll, setShowAll] = useState(false);
+    const displayedData = showAll ? floorDetailsData : floorDetailsData.slice(0, 4);
 
     return (
         <div>
             {/* Tabs */}
-            <div className="bg-[#40648a] rounded-t-md flex justify-between items-center">
-                {/* Tabs in center */}
-                <div className="flex-1 flex justify-center">
-                    <div className="flex items-stretch">
-                        {tabs.map((tab, index) => (
-                            <React.Fragment key={tab.key}>
-                                <button
-                                    onClick={() => setActiveTab(tab.key)}
-                                    className={`flex items-center gap-2 px-6 py-2 font-medium transition-all bg-[#40648a] mt-3 ${activeTab === tab.key
-                                        ? "bg-white text-black rounded-t-lg h-[90%]"
+            <div className="bg-[#40648a] rounded-t-md flex items-center relative">
+                {/* Left spacer for centering */}
+                <div className="flex-1"></div>
+
+                {/* Centered Tabs */}
+                <div className="flex items-stretch">
+                    {tabs.map((tab, index) => (
+                        <React.Fragment key={tab.key}>
+                            <button
+                                onClick={() => setActiveTab(tab.key)}
+                                className={`flex items-center gap-2 px-6 py-2 transition-all 
+                                    ${activeTab === tab.key
+                                        ? "bg-white text-black rounded-t-md"
                                         : "text-white hover:bg-[#365577]"
-                                        }`}
-                                >
-                                    {tab.icon}
-                                    {tab.label}
-                                </button>
-                                {index < tabs.length - 1 && (
-                                    <span className="w-px h-full bg-[#365577] opacity-70" />
-                                )}
-                            </React.Fragment>
-                        ))}
-                    </div>
+                                    }`}
+                            >
+                                {tab.icon}
+                                {tab.label}
+                            </button>
+                            {index < tabs.length - 1 && (
+                                <span className="w-px h-full bg-[#365577] opacity-70" />
+                            )}
+                        </React.Fragment>
+                    ))}
                 </div>
 
-                {/* + Add New Row button on the right */}
-                <div className="pr-4 mt-3">
+                {/* Right section with Add New Row button */}
+                <div className="flex-1 flex justify-end pr-4">
                     <Button
                         variant="contained"
                         color="primary"
                         size="small"
+                        startIcon={<FaPlus />}
+                        sx={{
+                            minWidth: "auto",
+                            fontSize: "0.7rem",
+                            padding: "2px 8px",
+                            lineHeight: 1.3,
+                            borderRadius: "4px",
+                            textTransform: "none",
+                        }}
                         onClick={() => {
-                            // Empty form data for Add case
                             setEditData({
                                 id: null,
                                 floor: "",
@@ -269,492 +374,297 @@ const FloorDetails = () => {
                                 carpetAreaSqM: "",
                                 builtUpAreaSqFt: "",
                                 builtUpAreaSqM: "",
-                                roomNo: "",
-                                taxLiability: "Self",
                                 renterName: "",
                                 calcRent: "",
                                 nonCalcRent: "",
+                                ocNo: "",
                                 ocApply: "No",
                                 ocDate: "",
-                                ocNo: "",
                             });
                             setIsModalOpen(true);
                         }}
                     >
-                        + Add New Row
+                        Add New Row
                     </Button>
                 </div>
             </div>
 
-
-
-            {/* Card */}
+            {/* Table */}
             <div className="bg-white shadow-md rounded-b-md p-0 border border-gray-300">
-                <div className="relative overflow-y-visible">
-                    <div
-                        ref={scrollRef}
-                        className="overflow-x-auto overflow-y-visible"
-                        onMouseEnter={() => setPaused(true)}
-                        onMouseLeave={() => setPaused(false)}
-                    >
-                        <table className="w-full border border-gray-300 text-sm">
-                            <thead style={{ backgroundColor: "#d9e3ec", color: "black" }}>
-                                <tr>
-                                    {[
-                                        "ID",
-                                        "Floor",
-                                        "Construction Year",
-                                        "Assessment Year",
-                                        "Construction Type",
-                                        "Nature Type of Building",
-                                        "Subtype",
-                                        "Carpet Area (sq.ft)",
-                                        "Carpet Area (sq.m)",
-                                        "Built-up Area (sq.ft)",
-                                        "Built-up Area (sq.m)",
-                                    ].map((col) => (
-                                        <th
-                                            key={col}
-                                            className="border border-gray-300 px-3 py-2 text-left"
-                                        >
-                                            {col}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {floorDetailsData.map((row, rowIdx) => (
-                                    <tr key={row.id} className="odd:bg-white even:bg-gray-50">
-                                        {Object.values({
-                                            id: row.id,
-                                            floor: getFloorName(row.floor),
-                                            constructionYear: row.constructionYear,
-                                            assessmentYear: row.assessmentYear,
-                                            constructionType: row.constructionType,
-                                            natureTypeBuilding: row.natureTypeBuilding,
-                                            subtype: row.subtype,
-                                            carpetAreaSqFt: row.carpetAreaSqFt,
-                                            carpetAreaSqM: row.carpetAreaSqM,
-                                            builtUpAreaSqFt: row.builtUpAreaSqFt,
-                                            builtUpAreaSqM: row.builtUpAreaSqM,
-                                        }).map((cell, colIdx) => (
-                                            <td
-                                                key={colIdx}
-                                                className="border px-3 py-2 relative cursor-pointer"
-                                                onDoubleClick={(e) => openMenuForCell(e, rowIdx, colIdx)}
-                                            >
-                                                {cell}
-                                            </td>
-                                        ))}
-                                    </tr>
+                <div
+                    ref={scrollRef}
+                    className="overflow-x-auto"
+                    onMouseEnter={() => setPaused(true)}
+                    onMouseLeave={() => setPaused(false)}
+                >
+                    <table className="w-full border border-gray-300 text-sm">
+                        <thead style={{ backgroundColor: "#d9e3ec", color: "black" }}>
+                            <tr>
+                                {[
+                                    "ID",
+                                    "Floor",
+                                    "Cons Yr",
+                                    "Asse Yr",
+                                    "Cons Type",
+                                    "NTB",
+                                    "Subtype",
+                                    "No. of Rooms",
+                                    "Carpet Area (sq.ft / sq.m)",
+                                    "Built-up Area (sq.ft / sq.m)",
+                                    "Name of Renter",
+                                    "Cal Rent (₹)",
+                                    "NCal Rent (₹)",
+                                    "OC No.",
+                                    "OC Date / OC Apply",
+                                ].map((col) => (
+                                    <th key={col} className="border px-3 py-2 text-left">
+                                        {col}
+                                    </th>
                                 ))}
-                            </tbody>
-                        </table>
-                    </div>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {displayedData.map((row, rowIdx) => (
+                                <tr
+                                    key={row.id}
+                                    onContextMenu={(e) => handleRowContextMenu(e, rowIdx)}
+                                >
+                                    {/* ID Column - Non-editable */}
+                                    <td className="border px-3 py-2 bg-gray-100">
+                                        {row.id}
+                                    </td>
+
+                                    {/* Editable columns */}
+                                    {["floor", "constructionYear", "assessmentYear", "constructionType", "natureTypeBuilding", "subtype", "noOfRooms"].map((field) => (
+                                        <td
+                                            key={field}
+                                            className="border px-3 py-2 cursor-pointer hover:bg-blue-50"
+                                            onClick={() => setEditingCell({ row: rowIdx, col: field })}
+                                        >
+                                            {editingCell.row === rowIdx && editingCell.col === field ? (
+                                                <input
+                                                    ref={cellInputRef}
+                                                    type="text"
+                                                    defaultValue={row[field]}
+                                                    onBlur={(e) => handleCellSave(rowIdx, field, e.target.value)}
+                                                    onKeyDown={(e) => handleCellKeyDown(e, rowIdx, field, e.target.value)}
+                                                    className="border border-blue-500 p-1 text-sm w-full outline-none ring-2 ring-blue-300"
+                                                />
+                                            ) : (
+                                                row[field] || "-"
+                                            )}
+                                        </td>
+                                    ))}
+                                    {/* Carpet Area (sq.ft / sq.m) */}
+                                    <td className="border px-3 py-2">
+                                        <div className="text-center">
+                                            {editingCell.row === rowIdx && (editingCell.col === "carpetAreaSqFt" || editingCell.col === "carpetAreaSqM") ? (
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {editingCell.col === "carpetAreaSqFt" ? (
+                                                        <>
+                                                            <input
+                                                                ref={cellInputRef}
+                                                                type="text"
+                                                                defaultValue={row.carpetAreaSqFt}
+                                                                onBlur={(e) => handleCellSave(rowIdx, "carpetAreaSqFt", e.target.value)}
+                                                                onKeyDown={(e) => handleCellKeyDown(e, rowIdx, "carpetAreaSqFt", e.target.value)}
+                                                                className="border border-blue-500 p-1 text-sm w-20 text-center outline-none ring-2 ring-blue-300"
+                                                            />
+                                                            <span>/</span>
+                                                            <span className="w-20 text-center">{row.carpetAreaSqM || "-"}</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <span className="w-20 text-center">{row.carpetAreaSqFt || "-"}</span>
+                                                            <span>/</span>
+                                                            <input
+                                                                ref={cellInputRef}
+                                                                type="text"
+                                                                defaultValue={row.carpetAreaSqM}
+                                                                onBlur={(e) => handleCellSave(rowIdx, "carpetAreaSqM", e.target.value)}
+                                                                onKeyDown={(e) => handleCellKeyDown(e, rowIdx, "carpetAreaSqM", e.target.value)}
+                                                                className="border border-blue-500 p-1 text-sm w-20 text-center outline-none ring-2 ring-blue-300"
+                                                            />
+                                                        </>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="cursor-pointer hover:bg-blue-50 px-2 py-1 rounded">
+                                                    <span onClick={() => setEditingCell({ row: rowIdx, col: "carpetAreaSqFt" })}>
+                                                        {row.carpetAreaSqFt || "-"}
+                                                    </span>
+                                                    <span className="mx-1">/</span>
+                                                    <span onClick={() => setEditingCell({ row: rowIdx, col: "carpetAreaSqM" })}>
+                                                        {row.carpetAreaSqM || "-"}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </td>
+                                    {/* Built-up Area (sq.ft / sq.m) */}
+                                    <td className="border px-3 py-2">
+                                        <div className="text-center">
+                                            {editingCell.row === rowIdx && (editingCell.col === "builtUpAreaSqFt" || editingCell.col === "builtUpAreaSqM") ? (
+                                                <div className="flex items-center justify-center gap-1">
+                                                    {editingCell.col === "builtUpAreaSqFt" ? (
+                                                        <>
+                                                            <input
+                                                                ref={cellInputRef}
+                                                                type="text"
+                                                                defaultValue={row.builtUpAreaSqFt}
+                                                                onBlur={(e) => handleCellSave(rowIdx, "builtUpAreaSqFt", e.target.value)}
+                                                                onKeyDown={(e) => handleCellKeyDown(e, rowIdx, "builtUpAreaSqFt", e.target.value)}
+                                                                className="border border-blue-500 p-1 text-sm w-20 text-center outline-none ring-2 ring-blue-300"
+                                                            />
+                                                            <span>/</span>
+                                                            <span className="w-20 text-center">{row.builtUpAreaSqM || "-"}</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <span className="w-20 text-center">{row.builtUpAreaSqFt || "-"}</span>
+                                                            <span>/</span>
+                                                            <input
+                                                                ref={cellInputRef}
+                                                                type="text"
+                                                                defaultValue={row.builtUpAreaSqM}
+                                                                onBlur={(e) => handleCellSave(rowIdx, "builtUpAreaSqM", e.target.value)}
+                                                                onKeyDown={(e) => handleCellKeyDown(e, rowIdx, "builtUpAreaSqM", e.target.value)}
+                                                                className="border border-blue-500 p-1 text-sm w-20 text-center outline-none ring-2 ring-blue-300"
+                                                            />
+                                                        </>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <div className="cursor-pointer hover:bg-blue-50 px-2 py-1 rounded">
+                                                    <span onClick={() => setEditingCell({ row: rowIdx, col: "builtUpAreaSqFt" })}>
+                                                        {row.builtUpAreaSqFt || "-"}
+                                                    </span>
+                                                    <span className="mx-1">/</span>
+                                                    <span onClick={() => setEditingCell({ row: rowIdx, col: "builtUpAreaSqM" })}>
+                                                        {row.builtUpAreaSqM || "-"}
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </td>
+                                    {["renterName", "calcRent", "nonCalcRent", "ocNo"].map((field) => (
+                                        <td
+                                            key={field}
+                                            className="border px-3 py-2 cursor-pointer hover:bg-blue-50"
+                                            onClick={() => setEditingCell({ row: rowIdx, col: field })}
+                                        >
+                                            {editingCell.row === rowIdx && editingCell.col === field ? (
+                                                <input
+                                                    ref={cellInputRef}
+                                                    type="text"
+                                                    defaultValue={row[field]}
+                                                    onBlur={(e) => handleCellSave(rowIdx, field, e.target.value)}
+                                                    onKeyDown={(e) => handleCellKeyDown(e, rowIdx, field, e.target.value)}
+                                                    className="border border-blue-500 p-1 text-sm w-full outline-none ring-2 ring-blue-300"
+                                                />
+                                            ) : (
+                                                row[field] || "-"
+                                            )}
+                                        </td>
+                                    ))}
+                                    <td className="border px-3 py-2">
+                                        <div className="flex justify-between items-center">
+                                            <span>{formatDate(row.ocDate)}</span>
+                                            <input
+                                                type="checkbox"
+                                                checked={row.ocApply === "Yes"}
+                                                onChange={(e) => {
+                                                    setFloorDetailsData((prev) =>
+                                                        prev.map((r) =>
+                                                            r.id === row.id
+                                                                ? { ...r, ocApply: e.target.checked ? "Yes" : "No" }
+                                                                : r
+                                                        )
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
 
-                {/* Dropdown */}
-                {menuPos.visible && activeCell && (
-                    <div
-                        data-dd
-                        className="fixed w-40 bg-white border border-gray-300 rounded-md shadow-lg z-[9999]"
-                        style={{
-                            top: `${menuPos.top}px`,
-                            left: `${menuPos.left}px`,
-                        }}
-                    >
-                        {dropdownOptions.map((option) => (
-                            <button
-                                key={option}
-                                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-100"
-                                onClick={() => handleMenuClick(option, activeCell.row)}
-                            >
-                                {option}
-                            </button>
-                        ))}
+                {/* Show All / Show Less toggle - bottom-right small */}
+                {floorDetailsData.length > 4 && (
+                    <div className="flex justify-end pr-2 mt-0.5 mb-0.5">
+                        <button
+                            className="text-blue-600 text-[10px] hover:underline"
+                            onClick={() => setShowAll(!showAll)}
+                        >
+                            {showAll ? "▲ Show Less" : "▼ Show All"}
+                        </button>
                     </div>
                 )}
 
-                {/* Modal */}
-                <Dialog
-                    open={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
-                    fullWidth
-                    maxWidth="lg"
+                {/* Context Menu */}
+                <Menu
+                    anchorReference="anchorPosition"
+                    anchorPosition={
+                        menuAnchor
+                            ? { top: menuAnchor.mouseY, left: menuAnchor.mouseX }
+                            : undefined
+                    }
+                    open={Boolean(menuAnchor)}
+                    onClose={() => setMenuAnchor(null)}
+                    PaperProps={{
+                        sx: {
+                            borderRadius: "6px",
+                            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                            "& .MuiMenuItem-root": {
+                                fontWeight: "bold",
+                                color: "#000",
+                                fontSize: "0.9rem",
+                                paddingY: "6px",
+                                paddingX: "14px",
+                            },
+                            "& .MuiMenuItem-root:hover": {
+                                backgroundColor: "#e6f0fa",
+                            },
+                        },
+                    }}
                 >
-                    <DialogTitle
-                        sx={{
-                            backgroundColor: "#40648a",
-                            color: "white",
-                            fontWeight: "bold",
-                            fontSize: "1.1rem",        // ⬆️ slightly larger font
-                            display: "flex",
-                            justifyContent: "center",  // centers text + icon
-                            alignItems: "center",
-                            gap: 1,
-                            borderRadius: "4px 4px 0 0",
-                            padding: "6px 14px",       // ⬆️ slightly more padding for balance
-                            minHeight: "36px"          // ⬆️ header height adjusted
-                        }}
-                    >
-                        <FaEdit style={{ marginRight: "6px", fontSize: "1.1rem" }} />
-                        Edit Floor Information
-                    </DialogTitle>
-
-
-
-                    <DialogContent >
-                        {editData && (
-                            <>
-                                <Grid container spacing={2} sx={{ mt: 2, display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr", gap: 2 }}>
-                                    {/* ---------------- ROW 1 ---------------- */}
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Floor"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.floor || ""}
-                                            onChange={(e) => setEditData({ ...editData, floor: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.floor = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "floor")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Construction Year"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.constructionYear}
-                                            onChange={(e) => setEditData({ ...editData, constructionYear: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.constructionYear = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "constructionYear")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Assessment Year"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.assessmentYear}
-                                            onChange={(e) => setEditData({ ...editData, assessmentYear: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.assessmentYear = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "assessmentYear")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Construction Type"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.constructionType}
-                                            onChange={(e) => setEditData({ ...editData, constructionType: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.constructionType = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "constructionType")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Nature Type of Building"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.natureTypeBuilding}
-                                            onChange={(e) => setEditData({ ...editData, natureTypeBuilding: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.natureTypeBuilding = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "natureTypeBuilding")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Subtype"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.subtype}
-                                            onChange={(e) => setEditData({ ...editData, subtype: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.subtype = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "subtype")}
-                                        />
-                                    </Grid>
-
-                                </Grid>
-                                <Grid container spacing={2} sx={{ mt: 2, display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr", gap: 2 }}>
-
-                                    {/* ---------------- ROW 2 ---------------- */}
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="No of Rooms"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editModal.noOfRooms || ""}
-                                            onChange={(e) => setEditModal({ ...editModal, noOfRooms: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.noOfRooms = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "noOfRooms")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            fullWidth
-                                            size="small"
-                                            onClick={handleOpen}
-                                            sx={{
-                                                fontSize: "1rem",   // 👈 increase text size (default ~0.875rem)
-                                                fontWeight: "600",  // 👈 optional: make it bolder
-                                                textTransform: "none", // keeps "Submission" as typed (not ALL CAPS)
-                                            }}
-                                            inputRef={(ref) => (inputRefs.current.submission = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "submission")}
-                                        >
-                                            Submission
-                                        </Button>
-                                    </Grid>
-
-
-                                    {/* Modal with RoomSubmissionForm */}
-                                    <Dialog open={openModal} onClose={handleClose} maxWidth="lg" fullWidth>
-                                        <DialogContent style={{ padding: 0 }}>
-                                            <RoomSubmissionForm onClose={handleClose} />
-                                        </DialogContent>
-                                    </Dialog>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Carpet Area (sq.ft)"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.carpetAreaSqFt}
-                                            onChange={(e) => setEditData({ ...editData, carpetAreaSqFt: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.carpetAreaSqFt = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "carpetAreaSqFt")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Carpet Area (sq.m)"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.carpetAreaSqM}
-                                            onChange={(e) => setEditData({ ...editData, carpetAreaSqM: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.carpetAreaSqM = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "carpetAreaSqM")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Built-up Area (sq.ft)"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.builtUpAreaSqFt}
-                                            onChange={(e) => setEditData({ ...editData, builtUpAreaSqFt: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.builtUpAreaSqFt = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "builtUpAreaSqFt")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={2}>
-                                        <TextField
-                                            label="Built-up Area (sq.m)"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.builtUpAreaSqM}
-                                            onChange={(e) => setEditData({ ...editData, builtUpAreaSqM: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.builtUpAreaSqM = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "builtUpAreaSqM")}
-                                        />
-                                    </Grid>
-
-                                </Grid>
-                                {/* ---------------- ROW 3 ---------------- */}
-                                <Grid container spacing={2} sx={{ mt: 2, display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr 1fr", gap: 2 }}>
-                                    <Grid item xs={12} sm={3}>
-                                        <TextField
-                                            label="Room No"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.roomNo || ""}
-                                            onChange={(e) => setEditData({ ...editData, roomNo: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.roomNo = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "roomNo")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={3}>
-                                        <TextField
-                                            label="Tax Liability"
-                                            select
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.taxLiability || "Self"}
-                                            onChange={(e) => setEditData({ ...editData, taxLiability: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.taxLiability = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "taxLiability")}
-                                        >
-                                            <MenuItem value="Self">Self</MenuItem>
-                                            <MenuItem value="Joint">Joint</MenuItem>
-                                        </TextField>
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={3}>
-                                        <TextField
-                                            label="Renter Full Name"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.renterName || ""}
-                                            onChange={(e) => setEditData({ ...editData, renterName: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.renterName = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "renterName")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={3}>
-                                        <TextField
-                                            label="Calculate Rent (₹)"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.calcRent || ""}
-                                            onChange={(e) => setEditData({ ...editData, calcRent: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.calcRent = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "calcRent")}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={3}>
-                                        <TextField
-                                            label="Non-Calculate Rent (₹)"
-                                            size="small"
-                                            InputLabelProps={{ shrink: true }}
-                                            fullWidth
-                                            value={editData.nonCalcRent || ""}
-                                            onChange={(e) => setEditData({ ...editData, nonCalcRent: e.target.value })}
-                                            inputRef={(ref) => (inputRefs.current.nonCalcRent = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "nonCalcRent")}
-                                        />
-                                    </Grid>
-
-                                    <Grid item xs={12} sm={3}>
-                                        <FormControlLabel
-                                            control={
-                                                <Switch
-                                                    checked={editData.ocApply === "Yes"}
-                                                    onChange={(e) =>
-                                                        setEditData({ ...editData, ocApply: e.target.checked ? "Yes" : "No" })
-                                                    }
-                                                    inputRef={(ref) => (inputRefs.current.ocApply = ref)}
-                                                    onKeyDown={(e) => handleKeyDown(e, "ocApply")}
-                                                />
-                                            }
-                                            label="OC Apply"
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                {/* ---------------- ROW 4 ---------------- */}
-                                <Grid
-                                    container
-                                    spacing={2}
-                                    sx={{
-                                        mt: 2,
-                                        display: "grid",
-                                        gridTemplateColumns: "auto auto 1fr", // compact OC fields + flexible button section
-                                        gap: 2,
-                                    }}
-                                >
-                                    {/* OC Date */}
-                                    <Grid item sx={{ width: "160px" }}>
-                                        <TextField
-                                            label="OC Date"
-                                            type="date"
-                                            size="small"
-                                            value={editData.ocDate || ""}
-                                            onChange={(e) => setEditData({ ...editData, ocDate: e.target.value })}
-                                            InputLabelProps={{ shrink: true }}
-                                            inputRef={(ref) => (inputRefs.current.ocDate = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "ocDate")}
-                                        />
-                                    </Grid>
-
-                                    {/* OC No */}
-                                    <Grid item sx={{ width: "160px" }}>
-                                        <TextField
-                                            label="OC No"
-                                            size="small"
-                                            value={editData.ocNo || ""}
-                                            onChange={(e) => setEditData({ ...editData, ocNo: e.target.value })}
-                                            InputLabelProps={{ shrink: true }}
-                                            inputRef={(ref) => (inputRefs.current.ocNo = ref)}
-                                            onKeyDown={(e) => handleKeyDown(e, "ocNo")}
-                                        />
-                                    </Grid>
-
-                                    {/* Add + Apply All buttons side by side */}
-                                    <Grid item display="flex" gap={1}>
-                                        <CustomButton
-                                            type="add"
-                                            onClick={() => console.log("Add clicked")}
-                                        >
-                                            Add
-                                        </CustomButton>
-
-                                        <CustomButton
-                                            type="generate"
-                                            onClick={() => console.log("Apply All clicked")}
-                                            sx={{ minWidth: "140px" }} // slightly wider than Add
-                                        >
-                                            Apply All
-                                        </CustomButton>
-                                    </Grid>
-                                </Grid>
-
-
-
-
-                            </>
-                        )}
-                    </DialogContent>
-
-                    {/* Custom Buttons in Footer */}
-                    <div className="flex justify-between items-center px-6 pb-1">
-                        <div className="flex gap-2">
-                            <CustomButton type="copy" onClick={() => console.log("Copy clicked")}>
-                                Copy
-                            </CustomButton>
-                            <CustomButton type="paste" onClick={() => console.log("Paste clicked")}>
-                                Paste
-                            </CustomButton>
-                        </div>
-                        <div className="flex gap-2">
-                            <CustomButton type="clear" onClick={() => setIsModalOpen(false)}>
-                                Cancel
-                            </CustomButton>
-                            <CustomButton type="save" onClick={handleSave}>
-                                Save
-                            </CustomButton>
-                        </div>
-                    </div>
-                </Dialog>
+                    {dropdownOptions.map((option) => (
+                        <MenuItem
+                            key={option}
+                            onClick={() => handleMenuClick(option)}
+                            sx={{
+                                color: option === "Delete" ? "#dc2626" : "#000",
+                                fontWeight: "bold",
+                            }}
+                        >
+                            {option}
+                        </MenuItem>
+                    ))}
+                </Menu>
             </div>
+
+            {/* Edit Floor Info modal */}
+            <EditFloorInformation
+                open={isModalOpen}
+                editData={editData}
+                setEditData={setEditData}
+                editModal={editModal}
+                setEditModal={setEditModal}
+                inputRefs={inputRefs}
+                handleKeyDown={() => { }}
+                handleOpenSubmission={handleOpen}
+                handleSave={handleSave}
+                handleClose={() => setIsModalOpen(false)}
+            />
+
+            {/* Room Submission Modal */}
+            <Dialog open={openModal} onClose={handleClose} maxWidth="lg" fullWidth>
+                <DialogContent style={{ padding: 0 }}>
+                    <RoomSubmissionForm onClose={handleClose} />
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

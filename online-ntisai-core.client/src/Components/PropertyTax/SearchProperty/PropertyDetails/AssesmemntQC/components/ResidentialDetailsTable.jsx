@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Search, ChevronUp, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Search, ChevronUp, ChevronDown, ExternalLink } from 'lucide-react';
 
 interface ResidentialDetailsTableProps {
     filterLimit?: number | null;
 }
 
 const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) => {
+    const navigate = useNavigate();
     const [isExpanded, setIsExpanded] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -36,7 +38,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "950 / 882",
             parkingArea: "25",
             rv: "48750",
-            propTax: "2437", // Added Prop Tax
             totalTax: "10095",
             mobileNo: "9876543201",
             email: "ram.kumar@email.com",
@@ -71,7 +72,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1350 / 1254",
             parkingArea: "30",
             rv: "69300",
-            propTax: "3465", // Added Prop Tax
             totalTax: "14366",
             mobileNo: "9876543202",
             email: "sunil.sharma@email.com",
@@ -106,7 +106,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "700 / 650",
             parkingArea: "20",
             rv: "27440",
-            propTax: "1372", // Added Prop Tax
             totalTax: "5686",
             mobileNo: "9876543203",
             email: "vikas.agrawal@email.com",
@@ -141,7 +140,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "980 / 910",
             parkingArea: "25",
             rv: "50225",
-            propTax: "2511", // Added Prop Tax
             totalTax: "10401",
             mobileNo: "9876543204",
             email: "amit.patel@email.com",
@@ -176,7 +174,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1280 / 1189",
             parkingArea: "35",
             rv: "65680",
-            propTax: "3284", // Added Prop Tax
             totalTax: "13616",
             mobileNo: "9876543205",
             email: "rajesh.gupta@email.com",
@@ -211,7 +208,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "920 / 854",
             parkingArea: "20",
             rv: "47030",
-            propTax: "2351", // Added Prop Tax
             totalTax: "9752",
             mobileNo: "9876543206",
             email: "prakash.joshi@email.com",
@@ -246,7 +242,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1850 / 1718",
             parkingArea: "40",
             rv: "94825",
-            propTax: "4741", // Added Prop Tax
             totalTax: "19655",
             mobileNo: "9876543207",
             email: "suresh.mahajan@email.com",
@@ -281,7 +276,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "680 / 632",
             parkingArea: "15",
             rv: "26692",
-            propTax: "1334", // Added Prop Tax
             totalTax: "5533",
             mobileNo: "9876543208",
             email: "anil.verma@email.com",
@@ -316,7 +310,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "1250 / 1161",
             parkingArea: "30",
             rv: "64050",
-            propTax: "3202", // Added Prop Tax
             totalTax: "13276",
             mobileNo: "9876543209",
             email: "mohan.desai@email.com",
@@ -351,7 +344,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
             builtUpArea: "995 / 924",
             parkingArea: "25",
             rv: "50977",
-            propTax: "2548", // Added Prop Tax
             totalTax: "10568",
             mobileNo: "9876543210",
             email: "ganesh.patil@email.com",
@@ -477,38 +469,44 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
     // Handle right-click navigation
     const handleRowRightClick = (e: React.MouseEvent, rowData: any) => {
         e.preventDefault(); // Prevent default context menu
-        window.location.href = "/propertyTax/propertySearch/propertyDetails";
+        navigate("/propertyTax/propertySearch/propertyDetails");
+    };
+
+    // Handle view icon click navigation
+    const handleViewClick = (e: React.MouseEvent, rowData: any) => {
+        e.stopPropagation(); // Prevent row click events
+        navigate("/propertyTax/propertySearch/propertyDetails");
     };
 
     return (
         <div className="mt-1">
-            <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white border border-[#0288d1] rounded-lg overflow-hidden shadow-md">
                 {/* Header */}
-                <div className="bg-[#E6F3FF] px-1.5 py-1 border-b border-gray-300 flex items-center justify-between">
-                    <h3 className="text-xs font-semibold text-gray-800">Residential Details</h3>
+                <div className="bg-gradient-to-r from-[#0277bd] to-[#0288d1] px-2 py-1.5 border-b border-[#0277bd] flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">Residential Details</h3>
                     <div className="flex items-center gap-2">
                         {/* Search Box */}
                         <div className="relative flex items-center">
-                            <Search className="w-3 h-3 text-gray-500 absolute left-1.5" />
+                            <Search className="w-3 h-3 text-gray-400 absolute left-1.5" />
                             <input
                                 type="text"
                                 placeholder="Search..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-6 pr-2 py-0.5 text-xs border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-28"
+                                className="pl-6 pr-2 py-1 text-xs border border-[#b3e5fc] rounded bg-white focus:outline-none focus:ring-2 focus:ring-white focus:border-white w-32 shadow-sm"
                             />
                         </div>
                         {/* Toggle Eye Icon */}
                         {hasMoreRows && (
                             <div
                                 onClick={handleToggleExpanded}
-                                className="cursor-pointer hover:opacity-70 transition-opacity duration-200"
+                                className="cursor-pointer hover:scale-110 transition-transform duration-200"
                                 title={isExpanded ? `Hide rows (${sortedData.length}/${tableData.length} results)` : `View all ${sortedData.length}/${tableData.length} results with scroll`}
                             >
                                 {isExpanded ? (
-                                    <Eye className="w-3 h-3 text-blue-600" />
+                                    <Eye className="w-3.5 h-3.5 text-white drop-shadow-sm" />
                                 ) : (
-                                    <EyeOff className="w-3 h-3 text-blue-600" />
+                                    <EyeOff className="w-3.5 h-3.5 text-white drop-shadow-sm" />
                                 )}
                             </div>
                         )}
@@ -519,10 +517,13 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                 <div className="overflow-x-auto scrollbar-corporate">
                     <div className={isExpanded ? "max-h-[280px] overflow-y-auto scrollbar-corporate" : ""}>
                         <table className="w-full text-[11px]">
-                            <thead className="sticky top-0 bg-white">
-                                <tr className="bg-[#F5F9FF] border-b border-gray-300">
+                            <thead className="sticky top-0 bg-white shadow-sm z-10">
+                                <tr className="bg-gradient-to-b from-[#e1f5fe] to-[#b3e5fc] border-b-2 border-[#0288d1]">
+                                    <th className="px-1.5 py-1.5 border-r border-[#81d4fa] w-[35px] text-center" title="View Details">
+
+                                    </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('newPropNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('newPropNo')}
                                         title="Single click to sort, double click to expand column"
@@ -530,7 +531,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         New PropNo {getSortIcon('newPropNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('oldPropNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('oldPropNo')}
                                         title="Single click to sort, double click to expand column"
@@ -538,7 +539,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Old PropNo {getSortIcon('oldPropNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('wing')}
                                         onDoubleClick={() => handleHeaderDoubleClick('wing')}
                                         title="Single click to sort, double click to expand column"
@@ -546,7 +547,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Wing {getSortIcon('wing')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('shopNo')}
                                         onDoubleClick={() => handleHeaderDoubleClick('shopNo')}
                                         title="Single click to sort, double click to expand column"
@@ -554,7 +555,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Shop No {getSortIcon('shopNo')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('shopName')}
                                         onDoubleClick={() => handleHeaderDoubleClick('shopName')}
                                         title="Single click to sort, double click to expand column"
@@ -562,7 +563,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Shop Name {getSortIcon('shopName')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[100px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[100px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('propHolderName')}
                                         onDoubleClick={() => handleHeaderDoubleClick('propHolderName')}
                                         title="Single click to sort, double click to expand column"
@@ -570,7 +571,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         PropHolder Name {getSortIcon('propHolderName')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('occupierName')}
                                         onDoubleClick={() => handleHeaderDoubleClick('occupierName')}
                                         title="Single click to sort, double click to expand column"
@@ -578,7 +579,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Occupier Name {getSortIcon('occupierName')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('rent')}
                                         onDoubleClick={() => handleHeaderDoubleClick('rent')}
                                         title="Single click to sort, double click to expand column"
@@ -586,7 +587,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Rent {getSortIcon('rent')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('propDesc')}
                                         onDoubleClick={() => handleHeaderDoubleClick('propDesc')}
                                         title="Single click to sort, double click to expand column"
@@ -594,7 +595,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Prop Desc {getSortIcon('propDesc')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('type')}
                                         onDoubleClick={() => handleHeaderDoubleClick('type')}
                                         title="Single click to sort, double click to expand column"
@@ -602,7 +603,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Type {getSortIcon('type')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('floor')}
                                         onDoubleClick={() => handleHeaderDoubleClick('floor')}
                                         title="Single click to sort, double click to expand column"
@@ -610,7 +611,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         Floor {getSortIcon('floor')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('ay')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ay')}
                                         title="Single click to sort, double click to expand column"
@@ -618,7 +619,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         A.Y. {getSortIcon('ay')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('acy')}
                                         onDoubleClick={() => handleHeaderDoubleClick('acy')}
                                         title="Single click to sort, double click to expand column"
@@ -626,7 +627,7 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         A.C.Y {getSortIcon('acy')}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[40px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick('ct')}
                                         onDoubleClick={() => handleHeaderDoubleClick('ct')}
                                         title="Single click to sort, double click to expand column"
@@ -696,14 +697,6 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                         title="Single click to sort, double click to expand column"
                                     >
                                         RV {getSortIcon('rv')}
-                                    </th>
-                                    <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
-                                        onClick={() => handleHeaderClick('propTax')}
-                                        onDoubleClick={() => handleHeaderDoubleClick('propTax')}
-                                        title="Single click to sort, double click to expand column"
-                                    >
-                                        Prop Tax {getSortIcon('propTax')}
                                     </th>
                                     <th
                                         className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
@@ -791,47 +784,54 @@ const ResidentialDetailsTable = ({ filterLimit }: ResidentialDetailsTableProps) 
                                 {displayedData.length > 0 ? (
                                     displayedData.map((row, index) => (
                                         <tr key={index}
-                                            className="border-b border-gray-200 hover:bg-gray-50 cursor-context-menu"
+                                            className="border-b border-[#b3e5fc] hover:bg-[#e1f5fe] cursor-context-menu transition-colors duration-150"
                                             onContextMenu={(e) => handleRowRightClick(e, row)}
                                             title="Right-click to view property details">
-                                            <td className={getCellClass('newPropNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.newPropNo}>{row.newPropNo}</td>
-                                            <td className={getCellClass('oldPropNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.oldPropNo}>{row.oldPropNo}</td>
-                                            <td className={getCellClass('wing', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.wing}>{row.wing}</td>
-                                            <td className={getCellClass('shopNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.shopNo}>{row.shopNo}</td>
-                                            <td className={getCellClass('shopName', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.shopName}>{row.shopName}</td>
-                                            <td className={getCellClass('propHolderName', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.propHolderName}>{row.propHolderName}</td>
-                                            <td className={getCellClass('occupierName', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.occupierName}>{row.occupierName}</td>
-                                            <td className={getCellClass('rent', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.rent}>{row.rent}</td>
-                                            <td className={getCellClass('propDesc', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.propDesc}>{row.propDesc}</td>
-                                            <td className={getCellClass('type', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.type}>{row.type}</td>
-                                            <td className={getCellClass('floor', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.floor}>{row.floor}</td>
-                                            <td className={getCellClass('ay', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ay}>{row.ay}</td>
-                                            <td className={getCellClass('acy', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.acy}>{row.acy}</td>
-                                            <td className={getCellClass('ct', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ct}>{row.ct}</td>
-                                            <td className={getCellClass('use', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.use}>{row.use}</td>
-                                            <td className={getCellClass('rooms', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.rooms}>{row.rooms}</td>
-                                            <td className={getCellClass('bhk', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.bhk}>{row.bhk}</td>
-                                            <td className={getCellClass('toi', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.toi}>{row.toi}</td>
-                                            <td className={getCellClass('cArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.cArea}>{row.cArea}</td>
-                                            <td className={getCellClass('builtUpArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.builtUpArea}>{row.builtUpArea}</td>
-                                            <td className={getCellClass('parkingArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.parkingArea}>{row.parkingArea}</td>
-                                            <td className={getCellClass('rv', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.rv}>{row.rv}</td>
-                                            <td className={getCellClass('propTax', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.propTax}>{row.propTax}</td>
-                                            <td className={getCellClass('totalTax', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.totalTax}>{row.totalTax}</td>
-                                            <td className={getCellClass('mobileNo', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.mobileNo}>{row.mobileNo}</td>
-                                            <td className={getCellClass('email', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.email}>{row.email}</td>
-                                            <td className={getCellClass('ocDate', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ocDate}>{row.ocDate}</td>
-                                            <td className={getCellClass('ocApply', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ocApply}>{row.ocApply}</td>
-                                            <td className={getCellClass('ocNumber', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800")} title={row.ocNumber}>{row.ocNumber}</td>
-                                            <td className={getCellClass('enBalArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.enBalArea}>{row.enBalArea}</td>
-                                            <td className={getCellClass('opBalArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.opBalArea}>{row.opBalArea}</td>
-                                            <td className={getCellClass('wbArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.wbArea}>{row.wbArea}</td>
-                                            <td className={getCellClass('taxArea', "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center")} title={row.taxArea}>{row.taxArea}</td>
+                                            <td className="px-1.5 py-1.5 border-r border-[#b3e5fc] text-center bg-[#fafafa]">
+                                                <ExternalLink
+                                                    className="w-3.5 h-3.5 cursor-pointer hover:scale-125 transition-transform inline-block"
+                                                    style={{ color: '#0277bd' }}
+                                                    onClick={(e) => handleViewClick(e, row)}
+                                                    title="Click to view property details"
+                                                />
+                                            </td>
+                                            <td className={getCellClass('newPropNo', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#263238] font-medium")} title={row.newPropNo}>{row.newPropNo}</td>
+                                            <td className={getCellClass('oldPropNo', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.oldPropNo}>{row.oldPropNo}</td>
+                                            <td className={getCellClass('wing', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.wing}>{row.wing}</td>
+                                            <td className={getCellClass('shopNo', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.shopNo}>{row.shopNo}</td>
+                                            <td className={getCellClass('shopName', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.shopName}>{row.shopName}</td>
+                                            <td className={getCellClass('propHolderName', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.propHolderName}>{row.propHolderName}</td>
+                                            <td className={getCellClass('occupierName', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.occupierName}>{row.occupierName}</td>
+                                            <td className={getCellClass('rent', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.rent}>{row.rent}</td>
+                                            <td className={getCellClass('propDesc', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.propDesc}>{row.propDesc}</td>
+                                            <td className={getCellClass('type', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.type}>{row.type}</td>
+                                            <td className={getCellClass('floor', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.floor}>{row.floor}</td>
+                                            <td className={getCellClass('ay', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.ay}>{row.ay}</td>
+                                            <td className={getCellClass('acy', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.acy}>{row.acy}</td>
+                                            <td className={getCellClass('ct', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.ct}>{row.ct}</td>
+                                            <td className={getCellClass('use', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.use}>{row.use}</td>
+                                            <td className={getCellClass('rooms', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.rooms}>{row.rooms}</td>
+                                            <td className={getCellClass('bhk', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.bhk}>{row.bhk}</td>
+                                            <td className={getCellClass('toi', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.toi}>{row.toi}</td>
+                                            <td className={getCellClass('cArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.cArea}>{row.cArea}</td>
+                                            <td className={getCellClass('builtUpArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.builtUpArea}>{row.builtUpArea}</td>
+                                            <td className={getCellClass('parkingArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.parkingArea}>{row.parkingArea}</td>
+                                            <td className={getCellClass('rv', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#0277bd] text-center font-medium")} title={row.rv}>{row.rv}</td>
+                                            <td className={getCellClass('totalTax', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#0277bd] text-center font-medium")} title={row.totalTax}>{row.totalTax}</td>
+                                            <td className={getCellClass('mobileNo', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.mobileNo}>{row.mobileNo}</td>
+                                            <td className={getCellClass('email', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.email}>{row.email}</td>
+                                            <td className={getCellClass('ocDate', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.ocDate}>{row.ocDate}</td>
+                                            <td className={getCellClass('ocApply', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.ocApply}>{row.ocApply}</td>
+                                            <td className={getCellClass('ocNumber', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]")} title={row.ocNumber}>{row.ocNumber}</td>
+                                            <td className={getCellClass('enBalArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.enBalArea}>{row.enBalArea}</td>
+                                            <td className={getCellClass('opBalArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.opBalArea}>{row.opBalArea}</td>
+                                            <td className={getCellClass('wbArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.wbArea}>{row.wbArea}</td>
+                                            <td className={getCellClass('taxArea', "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64] text-center")} title={row.taxArea}>{row.taxArea}</td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="32" className="px-4 py-8 text-center text-gray-500 text-sm">
+                                        <td colSpan="33" className="px-4 py-8 text-center text-[#455a64] text-sm bg-[#f5f5f5]">
                                             No results found for "{searchTerm}"
                                         </td>
                                     </tr>

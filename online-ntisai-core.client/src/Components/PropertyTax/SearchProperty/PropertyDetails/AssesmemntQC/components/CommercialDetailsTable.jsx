@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import {
     Eye,
     EyeOff,
     Search,
     ChevronUp,
     ChevronDown,
+    ExternalLink,
 } from "lucide-react";
 
 interface CommercialDetailsTableProps {
@@ -14,6 +16,7 @@ interface CommercialDetailsTableProps {
 const CommercialDetailsTable = ({
     filterLimit,
 }: CommercialDetailsTableProps) => {
+    const navigate = useNavigate();
     const [isExpanded, setIsExpanded] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [sortConfig, setSortConfig] = useState({
@@ -47,7 +50,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "140 / 130",
             parkingArea: "0",
             rv: "59501",
-            propTax: "2975", // Added Prop Tax
             totalTax: "14529",
             mobileNo: "9876543210",
             email: "owner1@email.com",
@@ -81,7 +83,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "165 / 153",
             parkingArea: "5",
             rv: "33017",
-            propTax: "1651", // Added Prop Tax
             totalTax: "6854",
             mobileNo: "9876543211",
             email: "owner2@email.com",
@@ -115,7 +116,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "150 / 139",
             parkingArea: "8",
             rv: "28456",
-            propTax: "1423", // Added Prop Tax
             totalTax: "5894",
             mobileNo: "9876543212",
             email: "ram.kumar@email.com",
@@ -149,7 +149,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "155 / 144",
             parkingArea: "0",
             rv: "42789",
-            propTax: "2139", // Added Prop Tax
             totalTax: "8856",
             mobileNo: "9876543213",
             email: "suresh.patil@email.com",
@@ -183,7 +182,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "138 / 128",
             parkingArea: "10",
             rv: "24617",
-            propTax: "1231", // Added Prop Tax
             totalTax: "5103",
             mobileNo: "9876543214",
             email: "manoj.sharma@email.com",
@@ -217,7 +215,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "152 / 141",
             parkingArea: "3",
             rv: "31245",
-            propTax: "1562", // Added Prop Tax
             totalTax: "6476",
             mobileNo: "9876543215",
             email: "amit.desai@email.com",
@@ -251,7 +248,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "165 / 153",
             parkingArea: "12",
             rv: "48923",
-            propTax: "2446", // Added Prop Tax
             totalTax: "10135",
             mobileNo: "9876543216",
             email: "vikas.agrawal@email.com",
@@ -285,7 +281,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "160 / 149",
             parkingArea: "5",
             rv: "35678",
-            propTax: "1784", // Added Prop Tax
             totalTax: "7395",
             mobileNo: "9876543217",
             email: "ramesh.kumar@email.com",
@@ -319,7 +314,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "148 / 138",
             parkingArea: "2",
             rv: "27834",
-            propTax: "1392", // Added Prop Tax
             totalTax: "5768",
             mobileNo: "9876543218",
             email: "sanjay.mishra@email.com",
@@ -353,7 +347,6 @@ const CommercialDetailsTable = ({
             builtUpArea: "162 / 150",
             parkingArea: "7",
             rv: "39567",
-            propTax: "1978", // Added Prop Tax
             totalTax: "8200",
             mobileNo: "9876543219",
             email: "prakash.joshi@email.com",
@@ -495,33 +488,39 @@ const CommercialDetailsTable = ({
     // Handle right-click navigation
     const handleRowRightClick = (e: React.MouseEvent, rowData: any) => {
         e.preventDefault(); // Prevent default context menu
-        window.location.href = "/propertyTax/propertySearch/propertyDetails";
+        navigate("/propertyTax/propertySearch/propertyDetails");
+    };
+
+    // Handle view icon click navigation
+    const handleViewClick = (e: React.MouseEvent, rowData: any) => {
+        e.stopPropagation(); // Prevent row click events
+        navigate("/propertyTax/propertySearch/propertyDetails");
     };
     return (
         <div className="mt-1">
-            <div className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+            <div className="bg-white border border-[#0288d1] rounded-lg overflow-hidden shadow-md">
                 {/* Header */}
-                <div className="bg-[#E6F3FF] px-1.5 py-1 border-b border-gray-300 flex items-center justify-between">
-                    <h3 className="text-xs font-semibold text-gray-800">
+                <div className="bg-gradient-to-r from-[#0277bd] to-[#0288d1] px-2 py-1.5 border-b border-[#0277bd] flex items-center justify-between">
+                    <h3 className="text-xl font-semibold text-white">
                         Commercial Details
                     </h3>
                     <div className="flex items-center gap-2">
                         {/* Search Box */}
                         <div className="relative flex items-center">
-                            <Search className="w-3 h-3 text-gray-500 absolute left-1.5" />
+                            <Search className="w-3 h-3 text-gray-400 absolute left-1.5" />
                             <input
                                 type="text"
                                 placeholder="Search..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-6 pr-2 py-0.5 text-xs border border-gray-300 rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 w-28"
+                                className="pl-6 pr-2 py-1 text-xs border border-[#b3e5fc] rounded bg-white focus:outline-none focus:ring-2 focus:ring-white focus:border-white w-32 shadow-sm"
                             />
                         </div>
                         {/* Toggle Eye Icon */}
                         {hasMoreRows && (
                             <div
                                 onClick={handleToggleExpanded}
-                                className="cursor-pointer hover:opacity-70 transition-opacity duration-200"
+                                className="cursor-pointer hover:scale-110 transition-transform duration-200"
                                 title={
                                     isExpanded
                                         ? `Hide rows (${sortedData.length}/${tableData.length} results)`
@@ -529,9 +528,9 @@ const CommercialDetailsTable = ({
                                 }
                             >
                                 {isExpanded ? (
-                                    <Eye className="w-3 h-3 text-blue-600" />
+                                    <Eye className="w-3.5 h-3.5 text-white drop-shadow-sm" />
                                 ) : (
-                                    <EyeOff className="w-3 h-3 text-blue-600" />
+                                    <EyeOff className="w-3.5 h-3.5 text-white drop-shadow-sm" />
                                 )}
                             </div>
                         )}
@@ -548,10 +547,13 @@ const CommercialDetailsTable = ({
                         }
                     >
                         <table className="w-full text-[11px]">
-                            <thead className="sticky top-0 bg-white">
-                                <tr className="bg-[#F5F9FF] border-b border-gray-300">
+                            <thead className="sticky top-0 bg-white shadow-sm z-10">
+                                <tr className="bg-gradient-to-b from-[#e1f5fe] to-[#b3e5fc] border-b-2 border-[#0288d1]">
+                                    <th className="px-1.5 py-1.5 border-r border-[#81d4fa] w-[35px] text-center" title="View Details">
+
+                                    </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() =>
                                             handleHeaderClick("newPropNo")
                                         }
@@ -563,7 +565,7 @@ const CommercialDetailsTable = ({
                                         New PropNo {getSortIcon("newPropNo")}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() =>
                                             handleHeaderClick("oldPropNo")
                                         }
@@ -575,7 +577,7 @@ const CommercialDetailsTable = ({
                                         Old PropNo {getSortIcon("oldPropNo")}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[50px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick("wing")}
                                         onDoubleClick={() =>
                                             handleHeaderDoubleClick("wing")
@@ -585,7 +587,7 @@ const CommercialDetailsTable = ({
                                         Wing {getSortIcon("wing")}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() => handleHeaderClick("shopNo")}
                                         onDoubleClick={() =>
                                             handleHeaderDoubleClick("shopNo")
@@ -595,7 +597,7 @@ const CommercialDetailsTable = ({
                                         Shop No {getSortIcon("shopNo")}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
+                                        className="px-2 py-1.5 text-left border-r border-[#81d4fa] font-bold text-[#01579b] min-w-[80px] text-[11px] leading-tight cursor-pointer hover:bg-[#b3e5fc] transition-colors select-none"
                                         onClick={() =>
                                             handleHeaderClick("shopName")
                                         }
@@ -780,14 +782,6 @@ const CommercialDetailsTable = ({
                                         RV {getSortIcon("rv")}
                                     </th>
                                     <th
-                                        className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[60px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
-                                        onClick={() => handleHeaderClick('propTax')}
-                                        onDoubleClick={() => handleHeaderDoubleClick('propTax')}
-                                        title="Single click to sort, double click to expand column"
-                                    >
-                                        Prop Tax {getSortIcon('propTax')}
-                                    </th>
-                                    <th
                                         className="px-1.5 py-0.5 text-left border-r border-gray-300 font-bold text-gray-900 min-w-[70px] text-[11px] leading-tight cursor-pointer hover:bg-blue-100 select-none"
                                         onClick={() =>
                                             handleHeaderClick("totalTax")
@@ -904,14 +898,22 @@ const CommercialDetailsTable = ({
                                     displayedData.map((row, index) => (
                                         <tr
                                             key={index}
-                                            className="border-b border-gray-200 hover:bg-gray-50 cursor-context-menu"
+                                            className="border-b border-[#b3e5fc] hover:bg-[#e1f5fe] cursor-context-menu transition-colors duration-150"
                                             onContextMenu={(e) => handleRowRightClick(e, row)}
                                             title="Right-click to view property details"
                                         >
+                                            <td className="px-1.5 py-1.5 border-r border-[#b3e5fc] text-center bg-[#fafafa]">
+                                                <ExternalLink
+                                                    className="w-3.5 h-3.5 cursor-pointer hover:scale-125 transition-transform inline-block"
+                                                    style={{ color: '#0277bd' }}
+                                                    onClick={(e) => handleViewClick(e, row)}
+                                                    title="Click to view property details"
+                                                />
+                                            </td>
                                             <td
                                                 className={getCellClass(
                                                     "newPropNo",
-                                                    "px-1.5 py-1.5 border-r border-gray-200 text-gray-800",
+                                                    "px-2 py-1.5 border-r border-[#b3e5fc] text-[#263238] font-medium",
                                                 )}
                                                 title={row.newPropNo}
                                             >
@@ -920,7 +922,7 @@ const CommercialDetailsTable = ({
                                             <td
                                                 className={getCellClass(
                                                     "oldPropNo",
-                                                    "px-1.5 py-1.5 border-r border-gray-200 text-gray-800",
+                                                    "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]",
                                                 )}
                                                 title={row.oldPropNo}
                                             >
@@ -929,7 +931,7 @@ const CommercialDetailsTable = ({
                                             <td
                                                 className={getCellClass(
                                                     "wing",
-                                                    "px-1.5 py-1.5 border-r border-gray-200 text-gray-800",
+                                                    "px-2 py-1.5 border-r border-[#b3e5fc] text-[#455a64]",
                                                 )}
                                                 title={row.wing}
                                             >
@@ -1099,15 +1101,6 @@ const CommercialDetailsTable = ({
                                             </td>
                                             <td
                                                 className={getCellClass(
-                                                    "propTax",
-                                                    "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center",
-                                                )}
-                                                title={row.propTax}
-                                            >
-                                                {row.propTax}
-                                            </td>
-                                            <td
-                                                className={getCellClass(
                                                     "totalTax",
                                                     "px-1.5 py-1.5 border-r border-gray-200 text-gray-800 text-center",
                                                 )}
@@ -1201,8 +1194,8 @@ const CommercialDetailsTable = ({
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="30"
-                                            className="px-4 py-8 text-center text-gray-500 text-sm"
+                                            colSpan="31"
+                                            className="px-4 py-8 text-center text-[#455a64] text-sm bg-[#f5f5f5]"
                                         >
                                             No results found for "{searchTerm}"
                                         </td>

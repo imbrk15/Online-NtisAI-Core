@@ -1,6 +1,8 @@
-﻿import React from "react";
+﻿import React, { useState } from "react";
+import { ChevronRight } from "lucide-react";
 
 const TaxDetails = () => {
+    const [isExpanded, setIsExpanded] = useState(false);
     const factorsHeaders = [
         "ID",
         "Base Value",
@@ -60,7 +62,8 @@ const TaxDetails = () => {
         { key: "TotalTax", label: "Total Tax" },
     ];
 
-    const taxData = [
+    // Collapsible rows (Residential and Commercial)
+    const collapsibleRows = [
         {
             taxes: "Residential (%)",
             GeneralTax: 0.110,
@@ -89,6 +92,10 @@ const TaxDetails = () => {
             Drain: 0.130,
             TotalTax: 1.9,
         },
+    ];
+
+    // Other rows (always visible)
+    const otherRows = [
         { taxes: "Net" },
         { taxes: "Retain" },
         { taxes: "Hearing" },
@@ -145,14 +152,45 @@ const TaxDetails = () => {
                                         className="border border-gray-300 px-1 py-0.5 truncate font-bold"
                                         style={{ width: `${100 / taxHeaders.length}%` }}
                                     >
-                                        {col.label}
+                                        {col.key === "taxes" ? (
+                                            <div className="inline-flex items-center gap-1 justify-center">
+                                                <button
+                                                    onClick={() => setIsExpanded(!isExpanded)}
+                                                    className="inline-flex items-center justify-center hover:text-blue-600 transition-all duration-200"
+                                                    aria-label={isExpanded ? "Collapse commercial rates" : "Expand commercial rates"}
+                                                >
+                                                    <ChevronRight
+                                                        className={`w-3 h-3 transition-transform duration-200 ${isExpanded ? 'rotate-90' : 'rotate-0'
+                                                            }`}
+                                                    />
+                                                </button>
+                                                <span>{col.label}</span>
+                                            </div>
+                                        ) : (
+                                            col.label
+                                        )}
                                     </th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
-                            {taxData.map((row, rowIdx) => (
-                                <tr key={rowIdx} className="odd:bg-white even:bg-gray-50">
+                            {/* Residential and Commercial Rows (collapsible) */}
+                            {isExpanded && collapsibleRows.map((row, rowIdx) => (
+                                <tr key={`collapsible-${rowIdx}`} className={rowIdx === 0 ? "bg-white" : "bg-gray-50"}>
+                                    {taxHeaders.map((header, colIdx) => (
+                                        <td
+                                            key={colIdx}
+                                            className="border border-gray-300 px-1 py-0.5 text-center truncate"
+                                        >
+                                            {row[header.key] ?? ""}
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))}
+
+                            {/* Other Rows (always visible) */}
+                            {otherRows.map((row, rowIdx) => (
+                                <tr key={`other-${rowIdx}`} className="odd:bg-white even:bg-gray-50">
                                     {taxHeaders.map((header, colIdx) => (
                                         <td
                                             key={colIdx}

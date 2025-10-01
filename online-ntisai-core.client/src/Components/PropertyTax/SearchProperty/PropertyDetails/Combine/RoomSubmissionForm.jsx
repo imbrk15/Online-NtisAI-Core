@@ -17,7 +17,7 @@ import {
     Typography,
     Paper,
 } from "@mui/material";
-import { Calculator } from "lucide-react";
+import { Calculator, Layers } from "lucide-react"; // ✅ Added Layers icon for title
 
 export default function RoomSubmissionForm({ onClose }) {
     const [entries, setEntries] = useState([
@@ -167,8 +167,9 @@ export default function RoomSubmissionForm({ onClose }) {
 
     return (
         <div className="w-full">
-            {/* Sticky Header */}
-            <div className="sticky top-0 z-50 bg-[#40648a] text-white text-xl font-semibold text-center py-2.5 shadow-md w-full">
+            {/* Sticky Header with Icon */}
+            <div className="sticky top-0 z-50 bg-[#40648a] text-white text-xl font-semibold text-center py-2.5 shadow-md w-full flex justify-center items-center gap-2">
+                <Layers size={22} /> {/* ✅ Added icon */}
                 <h1>ROOM WISE SUBMISSION IN SQUARE METER</h1>
             </div>
 
@@ -177,7 +178,7 @@ export default function RoomSubmissionForm({ onClose }) {
                 <Table
                     sx={{
                         "& .MuiTableCell-root": {
-                            padding: "4px 6px", // 👈 tighter
+                            padding: "4px 6px", // tighter
                             fontSize: "0.85rem",
                         },
                     }}
@@ -197,7 +198,7 @@ export default function RoomSubmissionForm({ onClose }) {
                     </TableHead>
                     <TableBody>
                         <TableRow>
-                            {/* Form Inputs (unchanged, compact padding applied globally) */}
+                            {/* Form Inputs */}
                             <TableCell align="center">
                                 <TextField
                                     size="small"
@@ -340,7 +341,7 @@ export default function RoomSubmissionForm({ onClose }) {
                     <Table
                         sx={{
                             "& .MuiTableCell-root": {
-                                padding: "4px 6px", // 👈 tighter row height
+                                padding: "4px 6px",
                                 fontSize: "0.85rem",
                             },
                         }}
