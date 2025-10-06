@@ -1,9 +1,11 @@
 import React from "react";
 import HomeNavbar from "./HomeNavbar";
+//import HomeNavbar from "../UserManagement/HomePage/HomeNavbar";
 import HomeWelcomeText from "./HomeWelcomeText";
 import HomeFooter from "./HomeFooter";
 import HomeBanner from "./HomeBanner";
 import HomeServices from "./HomeServices";
+
 function Homepage() {
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">

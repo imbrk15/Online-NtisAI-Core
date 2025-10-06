@@ -7,9 +7,9 @@ import ResidentialDetailsTable from "./ResidentialDetailsTable";
 import AssessmentTaxDetailsTable from "./AssessmentTaxDetailsTable";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { Building, Building2, Home, Calculator, Eye, X, Filter, ChevronDown } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogHeader } from "./ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Input } from "./ui/input";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription, DialogHeader } from "../../../../../ui/dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../../ui/select";
+import { Input } from "../../../../../ui/input";
 interface PropertyDetailsCombineProps {
     isFixed?: boolean;
     setIsFixed?: (fixed: boolean) => void;
