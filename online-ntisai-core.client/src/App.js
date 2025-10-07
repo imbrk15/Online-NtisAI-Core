@@ -5,6 +5,7 @@ import { LoaderProvider, useLoader } from "./Helpers/Loader/LoaderContext";
 import Loader from "./Helpers/Loader/Loader";
 import { ToastProvider } from './Contexts/ToastContext';
 import { AuthProvider, useAuth } from "./Contexts/AuthContext";
+import { PermissionProvider, usePermission } from "./Contexts/PermissionContext"; // Add this import
 import HomePage from "./Components/HomePage/Homepage";
 import UserManagement from "./Components/UserManagement/UserManagement";
 import PropertyTaxSurveyDashboard from "./Components/PropertyTax/PropertyTaxSurveyDashboard";
@@ -19,29 +20,88 @@ import MasterMain from "./Components/PropertyTax/Master/MasterMain";
 import AssesmentQCPage from "./Components/PropertyTax/SearchProperty/PropertyDetails/AssesmemntQC/AssesmentQCPage";
 import Login from "./Components/Auth/Login"
 
-function ProtectedRoute({ children }) {
+// Enhanced ProtectedRoute with permission checking
+function ProtectedRoute({ children, requiredPermission, requiredLevel = "view" }) {
     const { user } = useAuth();
+    const { hasPermission } = usePermission();
     const location = useLocation();
 
     if (!user) {
-        // Redirect to login but save the current location they were trying to go to
         return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    // If specific permission is required, check it
+    if (requiredPermission) {
+        const hasAccess = hasPermission(location.pathname, requiredLevel);
+
+        if (!hasAccess) {
+            // Show toast message about insufficient permissions
+            setTimeout(() => {
+                const event = new CustomEvent('show-permission-error', {
+                    detail: {
+                        message: "You don't have permission to access this page",
+                        from: location.pathname
+                    }
+                });
+                window.dispatchEvent(event);
+            }, 100);
+
+            return (
+                <Navigate
+                    to="/home"
+                    state={{
+                        from: location,
+                        error: "You don't have permission to access this page"
+                    }}
+                    replace
+                />
+            );
+        }
     }
 
     return children;
 }
+
 function AppRoutes() {
     const location = useLocation();
     const { setLoading } = useLoader();
     const { user } = useAuth();
-   
+    const { isLoading } = usePermission();
 
     useEffect(() => {
         setLoading(true);
         const timeout = setTimeout(() => setLoading(false), 100);
         return () => clearTimeout(timeout);
     }, [location, setLoading]);
-   
+    // Listen for permission errors and show toast
+    useEffect(() => {
+        const handlePermissionError = (event) => {
+            const { toast } = require("sonner");
+            toast.error(event.detail.message, {
+                description: `Access denied to: ${event.detail.from}`,
+                duration: 4000,
+            });
+        };
+
+        window.addEventListener('show-permission-error', handlePermissionError);
+        return () => window.removeEventListener('show-permission-error', handlePermissionError);
+    }, []);
+
+    // Show toast for location state errors (from redirects)
+    useEffect(() => {
+        if (location.state?.error) {
+            const { toast } = require("sonner");
+            toast.error(location.state.error, {
+                duration: 4000,
+            });
+            // Clear the error from state
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
+    if (isLoading) {
+        return <Loader />;
+    }
+
     return (
         <Routes>
             {/* Public routes */}
@@ -68,11 +128,11 @@ function AppRoutes() {
                 }
             />
 
-            {/* Protected routes - each route is individually protected */}
+            {/* Protected routes with specific permissions */}
             <Route
                 path="/home"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="home_access">
                         <HomePage />
                     </ProtectedRoute>
                 }
@@ -82,20 +142,34 @@ function AppRoutes() {
             <Route
                 path="/propertyTax"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="property_tax_access">
                         <PropertyTaxMain />
                     </ProtectedRoute>
                 }
             >
                 <Route index element={<PropertyTaxSurveyDashboard />} />
-                <Route path="collection" element={<PropertyTaxCollectionDashboard />} />
-                <Route path="billing" element={<PropertyTaxBillingDashboard />} />
+                <Route
+                    path="collection"
+                    element={
+                        <ProtectedRoute requiredPermission="property_tax_collection">
+                            <PropertyTaxCollectionDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="billing"
+                    element={
+                        <ProtectedRoute requiredPermission="property_tax_billing">
+                            <PropertyTaxBillingDashboard />
+                        </ProtectedRoute>
+                    }
+                />
             </Route>
 
             <Route
                 path="/propertyTax/propertySearch"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="property_search">
                         <SearchPropertyMain />
                     </ProtectedRoute>
                 }
@@ -103,7 +177,7 @@ function AppRoutes() {
             <Route
                 path="/propertyTax/propertySearch/propertyDetails"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="property_details_view">
                         <PropertyDetailsMain />
                     </ProtectedRoute>
                 }
@@ -111,7 +185,7 @@ function AppRoutes() {
             <Route
                 path="/propertyTax/wadhghatHistory"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="wadhghat_history">
                         <WadhghatHistoryMain />
                     </ProtectedRoute>
                 }
@@ -119,7 +193,7 @@ function AppRoutes() {
             <Route
                 path="/propertyTax/ferfarHistory"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="ferfar_history">
                         <FerfarHistoryMain />
                     </ProtectedRoute>
                 }
@@ -127,7 +201,7 @@ function AppRoutes() {
             <Route
                 path="/propertyTax/master"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="master_data_access">
                         <MasterMain />
                     </ProtectedRoute>
                 }
@@ -135,17 +209,17 @@ function AppRoutes() {
             <Route
                 path="/ntisAI/AssessmentQC"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="assessment_qc">
                         <AssesmentQCPage />
                     </ProtectedRoute>
                 }
             />
 
-            {/* User Management */}
+            {/* User Management - Only for Admins */}
             <Route
                 path="/user-management"
                 element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredPermission="user_management" requiredLevel="full">
                         <UserManagement />
                     </ProtectedRoute>
                 }
@@ -169,7 +243,9 @@ function App() {
         <ToastProvider>
             <LoaderProvider>
                 <AuthProvider>
-                    <AppRoutes />
+                    <PermissionProvider> {/* ADD THIS WRAPPER */}
+                        <AppRoutes />
+                    </PermissionProvider>
                 </AuthProvider>
             </LoaderProvider>
         </ToastProvider>

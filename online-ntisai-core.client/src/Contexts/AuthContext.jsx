@@ -1,4 +1,5 @@
-﻿import React, { createContext, useContext, useState, useEffect } from "react";
+﻿// src/Contexts/AuthContext.js
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 // Helper function to create proper ScreenPermission objects
 const createScreenPermission = (screenPath, permission = 'full') => {
@@ -103,8 +104,7 @@ const defaultFormPermissions = [
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);// Check for stored user data on component mount
-
+    const [user, setUser] = useState(null);
 
     // Available services with their categories and nested menu structure
     const availableServices = {
@@ -158,11 +158,46 @@ export function AuthProvider({ children }) {
                 { id: "2", name: "Dashboard", type: "screen" }
             ],
             "NTIS": [
-                { id: "1", name: "Analytics", type: "screen" },
+                { id: "1", name: "HomePage", type: "screen" },
+                { id: "2", name: "UserManagement", type: "screen" },
+                { id: "3", name: "PropertyTaxSurveyDashboard", type: "screen" },
+                { id: "4", name: "PropertyTaxCollectionDashboard", type: "screen" },
+                { id: "5", name: "PropertyTaxBillingDashboard", type: "screen" },
+                { id: "6", name: "PropertyTaxMain", type: "screen" },
+                { id: "7", name: "SearchPropertyMain", type: "screen" },
+                { id: "8", name: "FerfarHistoryMain", type: "screen" },
+                { id: "9", name: "AssesmentQCPage", type: "screen" },
                 {
-                    id: "2", name: "Reports", type: "menu", children: [
-                        { id: "2.1", name: "Collection Report", type: "screen" },
-                        { id: "2.2", name: "Defaulters Report", type: "screen" }
+                    id: "10", name: "MasterMain", type: "menu", children: [
+                        {
+                            id: "10.1", name: "Assessment Master", type: "menu", children: [
+                                { id: "10.1.1", name: "Type Of Use Master", type: "screen" },
+                                { id: "10.1.2", name: "Apply Taxes Master", type: "screen" },
+                                { id: "10.1.3", name: "Floor Master", type: "screen" },
+                                { id: "10.1.4", name: "Construction Type Master", type: "screen" },
+                                { id: "10.1.5", name: "Zone Master", type: "screen" },
+                                { id: "10.1.6", name: "Rate Master", type: "screen" },
+                                { id: "10.1.7", name: "Property Description & Type of Use Validation", type: "screen" },
+                                { id: "10.1.8", name: "Condition Master", type: "screen" },
+                                { id: "10.1.9", name: "Depreciation Master", type: "screen" }
+                            ]
+                        },
+                        {
+                            id: "10.2", name: "AMC Master", type: "menu", children: [
+                                { id: "10.2.1", name: "Penalty Master", type: "screen" }
+                            ]
+                        },
+                        {
+                            id: "10.3", name: "CV Master", type: "menu", children: [
+                                { id: "10.3.1", name: "Sub Zone Master", type: "screen" },
+                                { id: "10.3.2", name: "Combine Tax Master", type: "screen" },
+                                { id: "10.3.3", name: "Depreciation Master for CV", type: "screen" },
+                                { id: "10.3.4", name: "Open Plot Rate Master for CV", type: "screen" },
+                                { id: "10.3.5", name: "City Survey Master", type: "screen" },
+                                { id: "10.3.6", name: "Building Rate Master for CV", type: "screen" },
+                                { id: "10.3.7", name: "CV Factors", type: "screen" }
+                            ]
+                        }
                     ]
                 }
             ]
@@ -339,87 +374,7 @@ export function AuthProvider({ children }) {
             username: "admin",
             password: "12345",
             role: "Admin",
-            additionalPermissions: [
-                {
-                    service: "Property Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Assessment > New Assessment > Residential"),
-                            createScreenPermission("Assessment > New Assessment > Commercial")
-                        ],
-                        "Approval": [
-                            createScreenPermission("Citizen Services > View Bill")
-                        ]
-                    }
-                },
-                {
-                    service: "Water Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Connection Management > New Connection > Residential"),
-                            createScreenPermission("Connection Management > New Connection > Commercial")
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            username: "john_doe",
-            password: "john123",
-            role: "User",
-            additionalPermissions: [
-                {
-                    service: "Property Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Assessment > New Assessment > Residential", "view")
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            username: "jane_smith",
-            password: "jane123",
-            role: "User",
-            additionalPermissions: [
-                {
-                    service: "Water Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Connection Management > New Connection > Residential", "modify")
-                        ],
-                        "Approval": [
-                            createScreenPermission("View Bill", "view")
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            username: "mike_wilson",
-            password: "mike123",
-            role: "Admin",
-            additionalPermissions: [
-                {
-                    service: "Property Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Assessment > New Assessment > Residential"),
-                            createScreenPermission("Assessment > New Assessment > Commercial"),
-                            createScreenPermission("Assessment > New Assessment > Industrial")
-                        ]
-                    }
-                },
-                {
-                    service: "Trade License",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("License Management > New License")
-                        ]
-                    }
-                }
-            ]
+            additionalPermissions: [],
         },
     ]);
 
@@ -428,84 +383,7 @@ export function AuthProvider({ children }) {
         {
             username: "admin",
             role: "Admin",
-            additionalPermissions: [
-                {
-                    service: "Property Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Assessment > New Assessment > Residential"),
-                            createScreenPermission("Assessment > New Assessment > Commercial")
-                        ],
-                        "Approval": [
-                            createScreenPermission("Citizen Services > View Bill")
-                        ]
-                    }
-                },
-                {
-                    service: "Water Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Connection Management > New Connection > Residential"),
-                            createScreenPermission("Connection Management > New Connection > Commercial")
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            username: "john_doe",
-            role: "User",
-            additionalPermissions: [
-                {
-                    service: "Property Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Assessment > New Assessment > Residential", "view")
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            username: "jane_smith",
-            role: "User",
-            additionalPermissions: [
-                {
-                    service: "Water Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Connection Management > New Connection > Residential", "modify")
-                        ],
-                        "Approval": [
-                            createScreenPermission("View Bill", "view")
-                        ]
-                    }
-                }
-            ]
-        },
-        {
-            username: "mike_wilson",
-            role: "Admin",
-            additionalPermissions: [
-                {
-                    service: "Property Tax",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("Assessment > New Assessment > Residential"),
-                            createScreenPermission("Assessment > New Assessment > Commercial"),
-                            createScreenPermission("Assessment > New Assessment > Industrial")
-                        ]
-                    }
-                },
-                {
-                    service: "Trade License",
-                    categories: {
-                        "CFC": [
-                            createScreenPermission("License Management > New License")
-                        ]
-                    }
-                }
-            ]
+            additionalPermissions: [],
         },
     ]);
 

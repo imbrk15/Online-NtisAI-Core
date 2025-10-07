@@ -23,7 +23,6 @@ import { UserPlus, Shield, Key, FileText, Users, Pencil, Trash2, Lock, UserCog, 
 import { NestedMenuSelector } from "./NestedMenuSelector";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { toast } from "sonner";
-import { Toaster } from "../ui/sonner";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -589,7 +588,6 @@ function UserManagement() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
-            <Toaster />
             <HomeNavbar />
 
             {/* Background Pattern */}
@@ -760,7 +758,7 @@ function UserManagement() {
                                                                             <div key={perm.service} className="inline-flex items-center gap-1 mb-1">
                                                                                 <Badge
                                                                                     variant="outline"
-                                                                                    className="text-xs bg-blue-50 dark:bg-blue-950"
+                                                                                    className="text-xs bg-blue-50 dark:bg-blue-50"
                                                                                 >
                                                                                     {perm.service}
                                                                                 </Badge>
@@ -802,7 +800,7 @@ function UserManagement() {
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
-                                                                    className="h-8 w-8 p-0"
+                                                                    className="p-0"
                                                                     onClick={() => handleEditClick(u.username)}
                                                                 >
                                                                     <Pencil className="h-4 w-4" />
@@ -811,7 +809,7 @@ function UserManagement() {
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="sm"
-                                                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                                                    className="text-destructive hover:text-destructive"
                                                                     onClick={() => handleDeleteClick(u.username)}
                                                                 >
                                                                     <Trash2 className="h-4 w-4" />
@@ -970,15 +968,16 @@ function UserManagement() {
                                                                                 <Switch
                                                                                     checked={layer.status === "Active"}
                                                                                     onCheckedChange={() => toggleLayerStatus(layer.id)}
+                                                                                    className="h-[20px] w-[36px] data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-300"
                                                                                 />
                                                                             </div>
                                                                             <Button
                                                                                 variant="ghost"
                                                                                 size="sm"
-                                                                                className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                                                                                className="text-destructive hover:text-destructive"
                                                                                 onClick={() => handleDeleteLayerClick(layer.id)}
                                                                             >
-                                                                                <Trash2 className="h-4 w-4" />
+                                                                                <Trash2 className="h-5 w-5" />
                                                                                 <span className="sr-only">Delete layer</span>
                                                                             </Button>
                                                                         </div>
@@ -1022,15 +1021,15 @@ function UserManagement() {
                                         {/* Left Side: Layer Selector */}
                                         <div className="lg:col-span-1">
                                             <Card>
-                                                <CardHeader className="pb-3">
+                                                <CardHeader className="pb-0">
                                                     <CardTitle className="text-base">Select Security Layer</CardTitle>
                                                 </CardHeader>
-                                                <CardContent>
-                                                    <Select value={selectedLayerId} onValueChange={handleLayerSelection}>
+                                                <CardContent className="mb-2">
+                                                    <Select value={selectedLayerId} onValueChange={handleLayerSelection} >
                                                         <SelectTrigger>
                                                             <SelectValue placeholder="Choose layer" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
+                                                            <SelectContent className="w-[180px]">
                                                             {securityLayers.map((layer) => (
                                                                 <SelectItem key={layer.id} value={layer.id}>
                                                                     {layer.name}
@@ -1051,7 +1050,7 @@ function UserManagement() {
                                                         Configure access permissions for each screen
                                                     </CardDescription>
                                                 </CardHeader>
-                                                    <CardContent className="overflow-auto">
+                                                <CardContent className="overflow-auto">
                                                     <ScrollArea className="h-[600px] pr-4">
                                                         <Table>
                                                             <TableHeader>
@@ -1072,6 +1071,7 @@ function UserManagement() {
                                                                                 <Checkbox
                                                                                     checked={perm.none}
                                                                                     onCheckedChange={() => handlePermissionChange(index, 'none')}
+                                                                                    className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                 />
                                                                             </div>
                                                                         </TableCell>
@@ -1080,6 +1080,7 @@ function UserManagement() {
                                                                                 <Checkbox
                                                                                     checked={perm.view}
                                                                                     onCheckedChange={() => handlePermissionChange(index, 'view')}
+                                                                                    className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                 />
                                                                             </div>
                                                                         </TableCell>
@@ -1088,6 +1089,7 @@ function UserManagement() {
                                                                                 <Checkbox
                                                                                     checked={perm.modify}
                                                                                     onCheckedChange={() => handlePermissionChange(index, 'modify')}
+                                                                                    className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                 />
                                                                             </div>
                                                                         </TableCell>
@@ -1096,6 +1098,7 @@ function UserManagement() {
                                                                                 <Checkbox
                                                                                     checked={perm.fullControl}
                                                                                     onCheckedChange={() => handlePermissionChange(index, 'fullControl')}
+                                                                                    className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                 />
                                                                             </div>
                                                                         </TableCell>
@@ -1470,7 +1473,7 @@ function UserManagement() {
                                                     <SelectTrigger id="permissionLayer">
                                                         <SelectValue placeholder="L1 (Default)" />
                                                     </SelectTrigger>
-                                                    <SelectContent>
+                                                    <SelectContent className="bg-white w-[53rem]">
                                                         {securityLayers.map((layer) => (
                                                             <SelectItem key={layer.id} value={layer.id}>
                                                                 {layer.name} - {layer.description}
@@ -1577,16 +1580,16 @@ function UserManagement() {
                                                     <div className="flex gap-2">
                                                         <Eye className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
                                                         <div className="space-y-1 text-xs">
-                                                            <p className="text-blue-900 dark:text-blue-100">
+                                                            <p className="text-blue-900 dark:text-blue-900">
                                                                 <strong>Permission Levels:</strong>
                                                             </p>
-                                                            <ul className="space-y-1 text-blue-800 dark:text-blue-200 pl-4 list-disc">
+                                                            <ul className="space-y-1 text-blue-800 dark:text-blue-900 pl-4 list-disc">
                                                                 <li><strong>None:</strong> No access to this screen</li>
                                                                 <li><strong>View:</strong> Can only view data (read-only)</li>
                                                                 <li><strong>Modify:</strong> Can view and edit data</li>
                                                                 <li><strong>Full Access:</strong> Complete control including delete</li>
                                                             </ul>
-                                                            <p className="text-blue-800 dark:text-blue-200 mt-2">
+                                                            <p className="text-blue-800 dark:text-blue-900 mt-2">
                                                                 <strong>💡 Tip:</strong> Use "Quick Set" buttons to apply the same permission to all screens in a category at once, or set individual permissions using the dropdowns.
                                                             </p>
                                                         </div>
@@ -1624,7 +1627,7 @@ function UserManagement() {
                                                                                     <Button
                                                                                         variant="outline"
                                                                                         size="sm"
-                                                                                        className="h-8 text-xs px-3 bg-white dark:bg-slate-900"
+                                                                                        className="h-8 text-xs px-3 bg-white dark:bg-slate-200"
                                                                                         onClick={() => handleBulkSetServicePermissions(service, categories, 'view')}
                                                                                     >
                                                                                         All View
@@ -1632,7 +1635,7 @@ function UserManagement() {
                                                                                     <Button
                                                                                         variant="outline"
                                                                                         size="sm"
-                                                                                        className="h-8 text-xs px-3 bg-white dark:bg-slate-900"
+                                                                                        className="h-8 text-xs px-3 bg-white dark:bg-slate-200"
                                                                                         onClick={() => handleBulkSetServicePermissions(service, categories, 'modify')}
                                                                                     >
                                                                                         All Modify
@@ -1640,7 +1643,7 @@ function UserManagement() {
                                                                                     <Button
                                                                                         variant="outline"
                                                                                         size="sm"
-                                                                                        className="h-8 text-xs px-3 bg-white dark:bg-slate-900"
+                                                                                        className="h-8 text-xs px-3 bg-white dark:bg-slate-200"
                                                                                         onClick={() => handleBulkSetServicePermissions(service, categories, 'full')}
                                                                                     >
                                                                                         All Full Access
@@ -1717,6 +1720,7 @@ function UserManagement() {
                                                                                             items={menuItems}
                                                                                             screenPermissions={getScreenPermissionsForCategory(service, category)}
                                                                                             onPermissionChange={(path, permission) => handleScreenPermissionChange(service, category, path, permission)}
+                                                                                            enableMenuPermissions={service === "Property Tax" && category === "NTIS"}
                                                                                         />
                                                                                     </div>
                                                                                 </div>
@@ -1849,7 +1853,7 @@ function UserManagement() {
 
             {/* Add User to Layer Modal */}
             <Dialog open={showAddUserToLayerModal} onOpenChange={setShowAddUserToLayerModal}>
-                <DialogContent className="sm:max-w-[900px] lg:max-w-[1000px] max-h-[90vh] flex flex-col mx-auto my-8 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-white via-slate-50 to-blue-50/30 overflow-auto">
+                <DialogContent className="sm:max-w-[900px] lg:max-w-[1000px] max-h-[90vh] flex flex-col mx-auto my-8 fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-[#F5F2F4] via-[#F5F2F4] to-[#9DADC7] overflow-auto">
                     <DialogHeader>
                         <DialogTitle>Add User to Layer</DialogTitle>
                         <DialogDescription>
@@ -1928,6 +1932,7 @@ function UserManagement() {
                                                             onCheckedChange={(checked) => {
                                                                 setSelectedUserForLayer(checked ? user.username : null);
                                                             }}
+                                                                className = "border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                         />
                                                     </TableCell>
                                                     <TableCell>{idx + 1}</TableCell>
@@ -1992,6 +1997,7 @@ function UserManagement() {
                                                                     setSelectedUsersInLayer(selectedUsersInLayer.filter(u => u !== user.username));
                                                                 }
                                                             }}
+                                                            className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                         />
                                                     </TableCell>
                                                     <TableCell>{idx + 1}</TableCell>
@@ -2066,7 +2072,7 @@ function UserManagement() {
                                         <SelectTrigger id="editLayer" className="bg-white border-slate-300 focus:border-[#004c8c] focus:ring-[#004c8c]">
                                             <SelectValue placeholder="Select security layer" />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="bg-white w-[52rem]">
                                             {securityLayers.map((layer) => (
                                                 <SelectItem key={layer.id} value={layer.id}>
                                                     {layer.name} - {layer.description}
@@ -2119,6 +2125,7 @@ function UserManagement() {
                                                                                     <Checkbox
                                                                                         checked={perm.none}
                                                                                         onCheckedChange={() => handleEditUserCustomPermissionChange(index, 'none')}
+                                                                                        className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                     />
                                                                                 </div>
                                                                             </TableCell>
@@ -2127,6 +2134,7 @@ function UserManagement() {
                                                                                     <Checkbox
                                                                                         checked={perm.view}
                                                                                         onCheckedChange={() => handleEditUserCustomPermissionChange(index, 'view')}
+                                                                                        className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                     />
                                                                                 </div>
                                                                             </TableCell>
@@ -2135,6 +2143,7 @@ function UserManagement() {
                                                                                     <Checkbox
                                                                                         checked={perm.modify}
                                                                                         onCheckedChange={() => handleEditUserCustomPermissionChange(index, 'modify')}
+                                                                                        className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                     />
                                                                                 </div>
                                                                             </TableCell>
@@ -2143,6 +2152,7 @@ function UserManagement() {
                                                                                     <Checkbox
                                                                                         checked={perm.fullControl}
                                                                                         onCheckedChange={() => handleEditUserCustomPermissionChange(index, 'fullControl')}
+                                                                                        className="border-4 bg-transparent border-gray-900 data-[state=checked]:border-blue-600"
                                                                                     />
                                                                                 </div>
                                                                             </TableCell>
@@ -2175,12 +2185,12 @@ function UserManagement() {
                                         {/* Info Box */}
                                         <div className="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-md p-3">
                                             <div className="flex gap-2">
-                                                <Eye className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                                                <Eye className="w-4 h-4 text-blue-900 flex-shrink-0 mt-0.5" />
                                                 <div className="space-y-1 text-xs">
-                                                    <p className="text-blue-900 dark:text-blue-100">
+                                                    <p className="text-blue-900 dark:text-blue-900">
                                                         <strong>Permission Levels:</strong>
                                                     </p>
-                                                    <ul className="space-y-1 text-blue-800 dark:text-blue-200 pl-4 list-disc">
+                                                    <ul className="space-y-1 text-blue-800 dark:text-blue-900 pl-4 list-disc">
                                                         <li><strong>None:</strong> No access to this screen</li>
                                                         <li><strong>View:</strong> Can only view data (read-only)</li>
                                                         <li><strong>Modify:</strong> Can view and edit data</li>
@@ -2221,7 +2231,7 @@ function UserManagement() {
                                                                             <Button
                                                                                 variant="outline"
                                                                                 size="sm"
-                                                                                className="h-8 text-xs px-3 bg-white dark:bg-slate-900"
+                                                                                className="h-8 text-xs px-3 bg-white dark:bg-slate-200"
                                                                                 onClick={() => handleBulkSetServicePermissions(service, categories, 'view', true)}
                                                                             >
                                                                                 All View
@@ -2229,7 +2239,7 @@ function UserManagement() {
                                                                             <Button
                                                                                 variant="outline"
                                                                                 size="sm"
-                                                                                className="h-8 text-xs px-3 bg-white dark:bg-slate-900"
+                                                                                className="h-8 text-xs px-3 bg-white dark:bg-slate-200"
                                                                                 onClick={() => handleBulkSetServicePermissions(service, categories, 'modify', true)}
                                                                             >
                                                                                 All Modify
@@ -2237,7 +2247,7 @@ function UserManagement() {
                                                                             <Button
                                                                                 variant="outline"
                                                                                 size="sm"
-                                                                                className="h-8 text-xs px-3 bg-white dark:bg-slate-900"
+                                                                                className="h-8 text-xs px-3 bg-white dark:bg-slate-100"
                                                                                 onClick={() => handleBulkSetServicePermissions(service, categories, 'full', true)}
                                                                             >
                                                                                 All Full Access
@@ -2316,6 +2326,7 @@ function UserManagement() {
                                                                                     handleEditUserScreenPermissionChange(service, category, screenPath, permission)
                                                                                 }
                                                                                 screenPermissions={categoryPermissions}
+                                                                                enableMenuPermissions={service === "Property Tax" && category === "NTIS"}
                                                                             />
                                                                         </div>
                                                                     );
