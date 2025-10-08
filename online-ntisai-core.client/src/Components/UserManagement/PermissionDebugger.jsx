@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useAuth } from '../Contexts/AuthContext';
-import { usePermission } from '../Contexts/PermissionContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
+import { useAuth } from '../../Contexts/AuthContext';
+import { usePermission } from '../../Contexts/PermissionContext';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
 import { ChevronDown, ChevronUp, Eye, Edit, Shield, Lock } from 'lucide-react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 export default function PermissionDebugger() {
     const { user } = useAuth();

@@ -5,8 +5,10 @@ import HomeWelcomeText from "./HomeWelcomeText";
 import HomeFooter from "./HomeFooter";
 import HomeBanner from "./HomeBanner";
 import HomeServices from "./HomeServices";
-
+import  PermissionDebugger  from "../UserManagement/PermissionDebugger";
+import { useAuth } from "../../Contexts/AuthContext";
 function Homepage() {
+    const { user } = useAuth();
     return (
         <div className="flex flex-col min-h-screen bg-gray-100">
             {/* Banner */}
@@ -17,6 +19,9 @@ function Homepage() {
 
             {/* Welcome Text */}
             <HomeWelcomeText className="h-[5vh]" />
+
+            {/* Permission Debugger - Only for admins */}
+            {user?.role === 'Admin' && <PermissionDebugger />}
 
             {/* Main content should flex-grow */}
             <main className="flex-grow h-[36vh] overflow-auto">

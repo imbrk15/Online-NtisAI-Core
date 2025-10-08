@@ -1522,6 +1522,7 @@ function UserManagement() {
                                                                                             <Checkbox
                                                                                                 checked={perm.none}
                                                                                                 onCheckedChange={() => handleCustomPermissionChange(index, 'none')}
+                                                                                                className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                             />
                                                                                         </div>
                                                                                     </TableCell>
@@ -1530,6 +1531,7 @@ function UserManagement() {
                                                                                             <Checkbox
                                                                                                 checked={perm.view}
                                                                                                 onCheckedChange={() => handleCustomPermissionChange(index, 'view')}
+                                                                                                className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                             />
                                                                                         </div>
                                                                                     </TableCell>
@@ -1538,6 +1540,7 @@ function UserManagement() {
                                                                                             <Checkbox
                                                                                                 checked={perm.modify}
                                                                                                 onCheckedChange={() => handleCustomPermissionChange(index, 'modify')}
+                                                                                                className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                             />
                                                                                         </div>
                                                                                     </TableCell>
@@ -1546,6 +1549,7 @@ function UserManagement() {
                                                                                             <Checkbox
                                                                                                 checked={perm.fullControl}
                                                                                                 onCheckedChange={() => handleCustomPermissionChange(index, 'fullControl')}
+                                                                                                className="border-4 border-gray-900 data-[state=checked]:border-blue-600"
                                                                                             />
                                                                                         </div>
                                                                                     </TableCell>
