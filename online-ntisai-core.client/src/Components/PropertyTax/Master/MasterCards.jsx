@@ -368,6 +368,7 @@ function MasterCards() {
                         <PermissionWrapper componentKey="penalty_master">
                             <PenaltyMasterMain selectedAMCMaster={selectedAMCMaster} />
                         </PermissionWrapper>
+
                         {/* Add other AMC components with PermissionWrapper as needed */}
                     </div>
                 )}

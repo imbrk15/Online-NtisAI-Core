@@ -240,6 +240,7 @@ export function PermissionProvider({ children }) {
             'PropertyTaxMain': 'property_tax_access',
             'SearchPropertyMain': 'property_search',
             'FerfarHistoryMain': 'ferfar_history',
+            'WadhghatHistoryMain': 'wadhghat_history',
             'AssesmentQCPage': 'assessment_qc',
 
             // Assessment Master Components (with full path)
@@ -276,7 +277,6 @@ export function PermissionProvider({ children }) {
             'Master Data': 'master_data_access',
             'Assessment QC': 'assessment_qc',
         };
-
         return mapping[screenPath] || null;
     };
 

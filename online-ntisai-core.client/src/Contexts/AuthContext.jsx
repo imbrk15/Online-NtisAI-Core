@@ -168,7 +168,7 @@ export function AuthProvider({ children }) {
                 { id: "8", name: "FerfarHistoryMain", type: "screen" },
                 { id: "9", name: "AssesmentQCPage", type: "screen" },
                 {
-                    id: "10", name: "MasterMain", type: "menu", children: [
+                    id: "10", name: "master_data_access", type: "menu", children: [
                         {
                             id: "10.1", name: "Assessment Master", type: "menu", children: [
                                 { id: "10.1.1", name: "Type Of Use Master", type: "screen" },
@@ -199,7 +199,9 @@ export function AuthProvider({ children }) {
                             ]
                         }
                     ]
-                }
+                },
+                { id: "11", name: "WadhghatHistoryMain", type: "screen" },
+
             ]
         },
         "Water Tax": {
@@ -434,9 +436,7 @@ export function AuthProvider({ children }) {
     // User-Layer assignments state
     const [userLayerAssignments, setUserLayerAssignments] = useState({
         "admin": ["4"],
-        "john_doe": ["1"],
-        "jane_smith": ["2"],
-        "mike_wilson": ["3", "4"]
+        
     });
 
     // Check for stored user data on component mount

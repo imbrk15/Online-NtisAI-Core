@@ -178,7 +178,7 @@ export function NestedMenuSelector({
                                 <SelectTrigger className="max-w-[10vw] h-7 text-xs flex-shrink-0">
                                     <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-white">
                                     <SelectItem value="none" className="text-xs max-w-[8vw]">None</SelectItem>
                                     <SelectItem
                                         value="view"
